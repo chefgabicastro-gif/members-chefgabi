@@ -151,8 +151,9 @@ function renderRows(rows, products) {
   });
 
   rowsContainer.querySelectorAll(".cta-enter").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      alert("Aqui abriremos o player/trilha desse produto.");
+    btn.addEventListener("click", async (event) => {
+      const slug = event.currentTarget.getAttribute("data-slug");
+      await openUnlockedProduct(slug);
     });
   });
 }
@@ -168,6 +169,19 @@ async function goToCheckout(productSlug) {
   }
 
   window.open(data.checkoutUrl, "_blank", "noopener,noreferrer");
+}
+
+async function openUnlockedProduct(productSlug) {
+  const response = await fetch(`${API_BASE}/api/v1/products/${productSlug}/access`, {
+    headers: authHeaders()
+  });
+  const data = await response.json();
+  if (!response.ok) {
+    alert(data.error || "Acesso ainda nao configurado para este produto.");
+    return;
+  }
+
+  window.open(data.accessUrl, "_blank", "noopener,noreferrer");
 }
 
 async function loadDashboard() {
