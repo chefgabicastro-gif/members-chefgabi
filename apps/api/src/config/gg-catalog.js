@@ -1,0 +1,40 @@
+export const GG_PRODUCT_MAP_DEFAULT = {
+  DZidscEeFJfx9ikzPl: "cookies-upsell",
+  loyWx0lm9xhBQSJyN5r: "cookies-basico",
+  fR8NdRAwIBt1oLgCzns: "cookies-pro",
+  "5UgDNsoYfKvDbIxfuvf": "brownie-pro",
+  "7XGQIJX6ESqFnVU7bkADp": "brownie-upsell",
+  GvhJ7mNAl6xV4AXMU8N: "brownie-basico",
+  dhMbD84W4K8jeoFTJ7s: "palha-italiana-basico",
+  r6ekGWE0J8xWpADFQIv: "palha-italiana-pro",
+  DtmTiraKoBiYZgFKo: "palha-italiana-upsell",
+  "4zx7k6M3QyZxXocoGmS7G": "mini-bolo-vulcao-basico",
+  "69H4GQpow04U5cpwRPl": "mini-bolo-vulcao-pro",
+  e9J7k7RIBgZjvW4kKq4: "mini-bolo-vulcao-upsell",
+  B5a6s4BcpNQx2SfIon: "doces-no-pote-pro",
+  WLkiGPgaO06IQX9GNSM: "doces-no-pote-upsell",
+  dv6aBZStIj6kFJg5fvs: "doces-no-pote-basico",
+  C8YRBW3RVUcn2bzClVud: "iogurte-gourmet-pro",
+  sZsjAfUQOXb5knsNWYBG: "geladinho-gourmet-pro",
+  "8SnitdhdrpiLbdWUf": "recheio-sem-fogo-pro",
+  "7GoetQuOo0l0mpinzvN4Z": "massa-confeitaria-pro"
+};
+
+export const GG_CHECKOUT_LINKS_DEFAULT = {
+  "cookies-basico": "https://ggcheckout.app/checkout/v5/20Dsed1s9fQv1HYqxekq",
+  "cookies-pro": "https://ggcheckout.app/checkout/v5/QzLZWkBcDASIPNZ5Zf0t",
+  "cookies-upsell": "https://ggcheckout.app/checkout/v5/G3Z9wUVLH2wP2KgRmQ9R",
+  "brownie-basico": "https://ggcheckout.app/checkout/v5/bi4rE4iOdJz77kLNWHrb",
+  "brownie-pro": "https://ggcheckout.app/checkout/v5/dGUJ8Ztwl0ct036P2mcl",
+  "brownie-upsell": "https://ggcheckout.app/checkout/v5/7OPzDqPI0Ma6G0I1oISl",
+  "palha-italiana-basico": "https://ggcheckout.app/checkout/v5/um5JV9THLpvjIWu7Kddi",
+  "palha-italiana-pro": "https://ggcheckout.app/checkout/v5/888SKlSR3kgbk5dregAc",
+  "palha-italiana-upsell": "https://ggcheckout.app/checkout/v5/X4xcn9CYwXsazb5lCOqU",
+  "doces-no-pote-basico": "https://ggcheckout.app/checkout/v5/qm8tiHmsruYV5G2HoWXN",
+  "doces-no-pote-pro": "https://ggcheckout.app/checkout/v5/missgAjxiRMZoY6k7y12",
+  "doces-no-pote-upsell": "https://ggcheckout.app/checkout/v5/UqqBMly6CRGnJuGmhPJ5",
+  "mini-bolo-vulcao-basico": "https://ggcheckout.app/checkout/v5/6UmmG9Nbl6R0b1v7TNwV",
+  "mini-bolo-vulcao-pro": "https://ggcheckout.app/checkout/v5/6gISuHDXboa8TtBU14WC",
+  "mini-bolo-vulcao-upsell": "https://ggcheckout.app/checkout/v5/PC4zww87Ym4hpCAXztwl"
+};
+

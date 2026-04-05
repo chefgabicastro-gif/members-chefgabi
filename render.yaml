@@ -1,0 +1,32 @@
+services:
+  - type: web
+    name: chefgabi-members-api
+    runtime: node
+    rootDir: apps/api
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 4000
+      - key: WEB_ORIGIN
+        value: https://members.chefgabriellacastro.site
+      - key: WEBHOOK_SECRET
+        sync: false
+      - key: GG_WEBHOOK_SECRET
+        sync: false
+      - key: GG_PRODUCT_MAP
+        sync: false
+      - key: GG_CHECKOUT_LINKS
+        sync: false
+      - key: ADMIN_KEY
+        sync: false
+
+  - type: web
+    name: chefgabi-members-web
+    runtime: node
+    rootDir: apps/web
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: WEB_PORT
+        value: 10000

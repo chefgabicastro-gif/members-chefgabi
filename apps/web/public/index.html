@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#111827" />
+    <title>Premium Streaming Members</title>
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="scene-bg"></div>
+    <header class="topbar">
+      <div class="brand-box">
+        <span class="dot"></span>
+        <span class="brand">Prime Club</span>
+      </div>
+      <div class="topbar-actions">
+        <button id="installBtn" class="btn ghost hidden">Instalar app</button>
+        <button id="logoutBtn" class="btn ghost hidden">Sair</button>
+      </div>
+    </header>
+
+    <main class="container">
+      <section id="loginSection" class="login-shell">
+        <div class="login-glow"></div>
+        <h1>Area de membros premium</h1>
+        <p>Visual de streaming, acesso instantaneo por compra e trilha de evolucao em um so lugar.</p>
+        <form id="loginForm" class="login-form">
+          <input id="emailInput" type="email" placeholder="seuemail@dominio.com" required />
+          <button type="submit" class="btn solid">Entrar agora</button>
+        </form>
+      </section>
+
+      <section id="dashboardSection" class="hidden">
+        <article class="hero">
+          <div class="hero-copy">
+            <span class="pill">SAAS PREMIUM MEMBERS</span>
+            <h2>Seu ecossistema de produtos em formato streaming</h2>
+            <p>
+              Os produtos que voce comprou ficam liberados na hora. Os demais aparecem com
+              desbloqueio inteligente para elevar seu LTV.
+            </p>
+          </div>
+          <div class="hero-metrics">
+            <div class="metric">
+              <span id="unlockedMetric" class="value">0</span>
+              <span class="label">Liberados</span>
+            </div>
+            <div class="metric">
+              <span id="lockedMetric" class="value">0</span>
+              <span class="label">Bloqueados</span>
+            </div>
+            <div class="metric">
+              <span id="journeyMetric" class="value">0%</span>
+              <span class="label">Jornada ativa</span>
+            </div>
+          </div>
+        </article>
+        <div id="rowsContainer"></div>
+      </section>
+    </main>
+    <script src="/app.js"></script>
+  </body>
+</html>

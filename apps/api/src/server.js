@@ -1,0 +1,198 @@
+import "dotenv/config";
+import express from "express";
+import cors from "cors";
+import crypto from "node:crypto";
+import { requireAuth } from "./lib/auth.js";
+import {
+  createOrGetUserByEmail,
+  createSession,
+  getHomeRows,
+  grantEntitlement,
+  hasWebhookEvent,
+  listEntitlementsForUser,
+  listProductsForUser,
+  listWebhookEvents,
+  revokeEntitlement,
+  saveWebhookEvent
+} from "./lib/db.js";
+import { products } from "./config/products.js";
+import { normalizeGgCheckoutWebhook } from "./integrations/gg-checkout.js";
+import { getCheckoutUrl } from "./config/checkout.js";
+
+const app = express();
+const PORT = process.env.PORT || 4000;
+const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || "dev_webhook_secret";
+const GG_WEBHOOK_SECRET = process.env.GG_WEBHOOK_SECRET || "";
+const ADMIN_KEY = process.env.ADMIN_KEY || "dev_admin_key";
+const allowedOrigin = process.env.WEB_ORIGIN || "*";
+
+app.use(cors({ origin: allowedOrigin === "*" ? true : allowedOrigin }));
+app.use(
+  express.json({
+    verify: (req, _res, buf) => {
+      req.rawBody = buf.toString("utf8");
+    }
+  })
+);
+
+function safeEqual(a, b) {
+  const first = Buffer.from(String(a || ""));
+  const second = Buffer.from(String(b || ""));
+  if (first.length !== second.length) {
+    return false;
+  }
+  return crypto.timingSafeEqual(first, second);
+}
+
+function isValidGgSignature(req) {
+  if (!GG_WEBHOOK_SECRET) {
+    return true;
+  }
+
+  const raw = req.rawBody || "";
+  const provided =
+    req.headers["x-gg-signature"] ||
+    req.headers["x-signature"] ||
+    req.headers["x-webhook-secret"] ||
+    "";
+  const expectedHex = crypto.createHmac("sha256", GG_WEBHOOK_SECRET).update(raw).digest("hex");
+  const normalizedProvided = String(provided).replace(/^sha256=/i, "");
+
+  return safeEqual(normalizedProvided, expectedHex) || safeEqual(provided, GG_WEBHOOK_SECRET);
+}
+
+function parseWebhookPayload(provider, body) {
+  if (provider === "gg-checkout") {
+    return normalizeGgCheckoutWebhook(body);
+  }
+
+  const { eventId, status, email, productSlug } = body || {};
+  return { eventId, status, email, productSlug };
+}
+
+app.get("/health", (_req, res) => {
+  res.json({ status: "ok", service: "members-api", time: new Date().toISOString() });
+});
+
+app.post("/api/v1/auth/login", (req, res) => {
+  const { email } = req.body || {};
+  if (!email || typeof email !== "string") {
+    return res.status(400).json({ error: "Email is required" });
+  }
+
+  const user = createOrGetUserByEmail(email.trim().toLowerCase());
+  const token = createSession(user.id);
+  return res.json({ token, user });
+});
+
+app.get("/api/v1/auth/me", requireAuth, (req, res) => {
+  res.json({ user: req.user });
+});
+
+app.get("/api/v1/products", requireAuth, (req, res) => {
+  const items = listProductsForUser(req.user.id);
+  res.json({ products: items });
+});
+
+app.get("/api/v1/home/rows", requireAuth, (req, res) => {
+  const rows = getHomeRows(req.user.id);
+  res.json({ rows });
+});
+
+app.get("/api/v1/entitlements/me", requireAuth, (req, res) => {
+  const entitlements = listEntitlementsForUser(req.user.id);
+  res.json({ entitlements });
+});
+
+app.get("/api/v1/checkout/url/:productSlug", requireAuth, (req, res) => {
+  const productSlug = req.params.productSlug;
+  const product = products.find((item) => item.slug === productSlug);
+  if (!product) {
+    return res.status(404).json({ error: "Product not found" });
+  }
+
+  const checkoutUrl = getCheckoutUrl(productSlug, req.user.email);
+  if (!checkoutUrl) {
+    return res.status(404).json({
+      error: "Checkout URL not configured for this product",
+      productSlug
+    });
+  }
+
+  return res.json({ checkoutUrl, productSlug });
+});
+
+app.post("/api/v1/admin/entitlements/grant", (req, res) => {
+  const key = req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) {
+    return res.status(401).json({ error: "Unauthorized admin key" });
+  }
+
+  const { email, productSlug } = req.body || {};
+  if (!email || !productSlug) {
+    return res.status(400).json({ error: "email and productSlug are required" });
+  }
+
+  const user = createOrGetUserByEmail(String(email).toLowerCase());
+  const product = products.find((p) => p.slug === productSlug);
+  if (!product) {
+    return res.status(404).json({ error: "Product not found" });
+  }
+
+  grantEntitlement({ userId: user.id, productSlug, source: "admin_manual" });
+  return res.json({ success: true, userId: user.id, productSlug });
+});
+
+app.get("/api/v1/admin/webhooks/events", (req, res) => {
+  const key = req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) {
+    return res.status(401).json({ error: "Unauthorized admin key" });
+  }
+  const limit = Number(req.query.limit || 50);
+  const items = listWebhookEvents(Math.min(Math.max(limit, 1), 200));
+  return res.json({ events: items });
+});
+
+app.post("/api/v1/webhooks/:provider", (req, res) => {
+  const provider = req.params.provider;
+  const signature = req.headers["x-webhook-secret"];
+
+  if (provider === "gg-checkout") {
+    if (!isValidGgSignature(req)) {
+      return res.status(401).json({ error: "Invalid GG webhook signature" });
+    }
+  } else if (signature !== WEBHOOK_SECRET) {
+    return res.status(401).json({ error: "Invalid webhook signature" });
+  }
+
+  const { eventId, status, email, productSlug } = parseWebhookPayload(provider, req.body || {});
+  if (!eventId || !status || !email || !productSlug) {
+    return res
+      .status(400)
+      .json({
+        error: "Unable to normalize webhook payload: eventId, status, email and productSlug are required"
+      });
+  }
+
+  if (hasWebhookEvent(provider, eventId)) {
+    return res.status(200).json({ success: true, deduplicated: true });
+  }
+
+  saveWebhookEvent({ provider, eventId, payload: req.body });
+  const user = createOrGetUserByEmail(String(email).toLowerCase());
+
+  if (status === "approved") {
+    grantEntitlement({ userId: user.id, productSlug, source: `${provider}:${eventId}` });
+  }
+
+  if (status === "refunded" || status === "chargeback" || status === "canceled") {
+    revokeEntitlement({ userId: user.id, productSlug, source: `${provider}:${eventId}` });
+  }
+
+  return res.status(200).json({ success: true });
+});
+
+app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
+  console.log(`Members API running on port ${PORT}`);
+});

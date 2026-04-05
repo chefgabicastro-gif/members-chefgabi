@@ -1,0 +1,16 @@
+{
+  "name": "Premium Members",
+  "short_name": "Members",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090d16",
+  "theme_color": "#101624",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/1828/1828884.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+
