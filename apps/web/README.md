@@ -19,3 +19,5 @@ Defina URL da API em `public/config.json`:
   "apiBase": "http://localhost:4000"
 }
 ```
+
+Customizacao de marca em `public/brand.json`.

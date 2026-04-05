@@ -50,6 +50,12 @@ body {
   gap: 10px;
 }
 
+.brand-texts {
+  display: flex;
+  flex-direction: column;
+  line-height: 0.95;
+}
+
 .dot {
   width: 12px;
   height: 12px;
@@ -62,6 +68,12 @@ body {
   font-family: "Bebas Neue", sans-serif;
   letter-spacing: 0.08em;
   font-size: 1.8rem;
+}
+
+.brand-subtitle {
+  font-size: 0.72rem;
+  color: #9fb0cf;
+  letter-spacing: 0.08em;
 }
 
 .topbar-actions {

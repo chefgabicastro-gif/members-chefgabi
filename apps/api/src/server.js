@@ -6,11 +6,13 @@ import { requireAuth } from "./lib/auth.js";
 import {
   createOrGetUserByEmail,
   createSession,
+  findUserByEmail,
   getHomeRows,
   grantEntitlement,
   hasWebhookEvent,
   listEntitlementsForUser,
   listProductsForUser,
+  listUsers,
   listWebhookEvents,
   revokeEntitlement,
   saveWebhookEvent
@@ -141,6 +143,50 @@ app.post("/api/v1/admin/entitlements/grant", (req, res) => {
 
   grantEntitlement({ userId: user.id, productSlug, source: "admin_manual" });
   return res.json({ success: true, userId: user.id, productSlug });
+});
+
+app.post("/api/v1/admin/entitlements/revoke", (req, res) => {
+  const key = req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) {
+    return res.status(401).json({ error: "Unauthorized admin key" });
+  }
+
+  const { email, productSlug } = req.body || {};
+  if (!email || !productSlug) {
+    return res.status(400).json({ error: "email and productSlug are required" });
+  }
+
+  const user = findUserByEmail(String(email).toLowerCase());
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  revokeEntitlement({ userId: user.id, productSlug, source: "admin_manual_revoke" });
+  return res.json({ success: true, userId: user.id, productSlug });
+});
+
+app.get("/api/v1/admin/users", (req, res) => {
+  const key = req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) {
+    return res.status(401).json({ error: "Unauthorized admin key" });
+  }
+  const limit = Number(req.query.limit || 100);
+  const users = listUsers(Math.min(Math.max(limit, 1), 500));
+  return res.json({ users });
+});
+
+app.get("/api/v1/admin/users/:email/entitlements", (req, res) => {
+  const key = req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) {
+    return res.status(401).json({ error: "Unauthorized admin key" });
+  }
+  const email = decodeURIComponent(req.params.email || "").toLowerCase();
+  const user = findUserByEmail(email);
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+  const entitlements = listEntitlementsForUser(user.id);
+  return res.json({ user, entitlements });
 });
 
 app.get("/api/v1/admin/webhooks/events", (req, res) => {

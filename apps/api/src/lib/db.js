@@ -60,6 +60,11 @@ export function createOrGetUserByEmail(email) {
   return user;
 }
 
+export function findUserByEmail(email) {
+  const db = readDb();
+  return db.users.find((u) => u.email.toLowerCase() === String(email).toLowerCase()) ?? null;
+}
+
 export function createSession(userId) {
   const db = readDb();
   const token = crypto.randomBytes(24).toString("hex");
@@ -167,4 +172,17 @@ export function listEntitlementsForUser(userId) {
 export function listWebhookEvents(limit = 50) {
   const db = readDb();
   return db.webhookEvents.slice(-limit).reverse();
+}
+
+export function listUsers(limit = 100) {
+  const db = readDb();
+  return db.users
+    .slice(-limit)
+    .reverse()
+    .map((user) => {
+      const activeCount = db.entitlements.filter(
+        (entitlement) => entitlement.userId === user.id && entitlement.status === "active"
+      ).length;
+      return { ...user, activeEntitlements: activeCount };
+    });
 }

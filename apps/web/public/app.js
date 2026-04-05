@@ -11,10 +11,29 @@ const installBtn = document.getElementById("installBtn");
 const unlockedMetric = document.getElementById("unlockedMetric");
 const lockedMetric = document.getElementById("lockedMetric");
 const journeyMetric = document.getElementById("journeyMetric");
+const brandName = document.getElementById("brandName");
+const brandTagline = document.getElementById("brandTagline");
+const loginTitle = document.getElementById("loginTitle");
+const loginDescription = document.getElementById("loginDescription");
+const heroPill = document.getElementById("heroPill");
+const heroTitle = document.getElementById("heroTitle");
+const heroDescription = document.getElementById("heroDescription");
 
 let deferredPrompt = null;
 let token = localStorage.getItem("members_token");
 let currentUser = null;
+
+function applyBrand(config) {
+  if (!config || typeof config !== "object") return;
+  if (config.brandName) brandName.textContent = config.brandName;
+  if (config.brandTagline) brandTagline.textContent = config.brandTagline;
+  if (config.loginTitle) loginTitle.textContent = config.loginTitle;
+  if (config.loginDescription) loginDescription.textContent = config.loginDescription;
+  if (config.heroPill) heroPill.textContent = config.heroPill;
+  if (config.heroTitle) heroTitle.textContent = config.heroTitle;
+  if (config.heroDescription) heroDescription.textContent = config.heroDescription;
+  if (config.brandName) document.title = config.brandName;
+}
 
 function authHeaders() {
   return {
@@ -208,6 +227,16 @@ installBtn.addEventListener("click", async () => {
 });
 
 window.addEventListener("load", async () => {
+  try {
+    const brandResponse = await fetch("/brand.json");
+    if (brandResponse.ok) {
+      const brandConfig = await brandResponse.json();
+      applyBrand(brandConfig);
+    }
+  } catch (_error) {
+    // Sem bloqueio se brand.json falhar.
+  }
+
   try {
     const configResponse = await fetch("/config.json");
     if (configResponse.ok) {

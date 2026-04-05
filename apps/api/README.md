@@ -12,6 +12,9 @@ API Node/Express do MVP.
 - `GET /api/v1/checkout/url/:productSlug`
 - `POST /api/v1/webhooks/:provider`
 - `POST /api/v1/admin/entitlements/grant`
+- `POST /api/v1/admin/entitlements/revoke`
+- `GET /api/v1/admin/users`
+- `GET /api/v1/admin/users/{email}/entitlements`
 - `GET /api/v1/admin/webhooks/events`
 
 ## Seguranca basica
