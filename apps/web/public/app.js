@@ -19,10 +19,14 @@ const heroPill = document.getElementById("heroPill");
 const heroTitle = document.getElementById("heroTitle");
 const heroDescription = document.getElementById("heroDescription");
 const userEmailEl = document.getElementById("userEmail");
+const heroPanel = document.getElementById("heroPanel");
+const heroWatchBtn = document.getElementById("heroWatchBtn");
+const heroDetailsBtn = document.getElementById("heroDetailsBtn");
 
 let deferredPrompt = null;
 let token = localStorage.getItem("members_token");
 let currentUser = null;
+let currentProducts = [];
 
 function applyBrand(config) {
   if (!config || typeof config !== "object") return;
@@ -119,6 +123,44 @@ function cardTemplate(product) {
   `;
 }
 
+function railTemplate(row) {
+  return `
+    <section class="row-block">
+      <div class="row-head">
+        <h3 class="row-title">${row.title}</h3>
+        <div class="row-nav">
+          <button class="row-btn" data-row="${row.id}" data-dir="left">‹</button>
+          <button class="row-btn" data-row="${row.id}" data-dir="right">›</button>
+        </div>
+      </div>
+      <div id="rail-${row.id}" class="rail-track">
+        ${row.items.map((item) => cardTemplate(item)).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function setHeroFeatured(products) {
+  const featured = products.find((item) => item.isUnlocked) || products[0];
+  if (!featured) return;
+  heroTitle.textContent = `${featured.title} - ${featured.tagline || "Conteudo premium"}`;
+  heroDescription.textContent = featured.description;
+  heroPill.textContent = featured.isUnlocked ? "LIBERADO AGORA" : "DESTAQUE DA SEMANA";
+  heroPanel.style.backgroundImage = `linear-gradient(110deg, rgba(255, 140, 66, 0.2), rgba(17, 24, 39, 0.82)), linear-gradient(150deg, #131a2a, #101521), url('${featured.cover}')`;
+  heroPanel.style.backgroundSize = "cover";
+  heroPanel.style.backgroundPosition = "center";
+  heroWatchBtn.onclick = async () => {
+    if (featured.isUnlocked) {
+      await openUnlockedProduct(featured.slug);
+      return;
+    }
+    await goToCheckout(featured.slug);
+  };
+  heroDetailsBtn.onclick = () => {
+    window.location.hash = "#rowsContainer";
+  };
+}
+
 function renderRows(rows, products) {
   if (!rows.length) {
     rowsContainer.innerHTML = "<p>Nenhum produto encontrado.</p>";
@@ -131,19 +173,9 @@ function renderRows(rows, products) {
   unlockedMetric.textContent = String(unlockedCount);
   lockedMetric.textContent = String(lockedCount);
   journeyMetric.textContent = `${journeyPct}%`;
-
-  rowsContainer.innerHTML = rows
-    .map(
-      (row) => `
-      <section class="row-block">
-        <h3 class="row-title">${row.title}</h3>
-        <div class="cards">
-          ${row.items.map((item) => cardTemplate(item)).join("")}
-        </div>
-      </section>
-    `
-    )
-    .join("");
+  currentProducts = products;
+  setHeroFeatured(products);
+  rowsContainer.innerHTML = rows.map((row) => railTemplate(row)).join("");
 
   rowsContainer.querySelectorAll(".cta-unlock").forEach((btn) => {
     btn.addEventListener("click", async (event) => {
@@ -156,6 +188,20 @@ function renderRows(rows, products) {
     btn.addEventListener("click", async (event) => {
       const slug = event.currentTarget.getAttribute("data-slug");
       await openUnlockedProduct(slug);
+    });
+  });
+
+  rowsContainer.querySelectorAll(".row-btn").forEach((btn) => {
+    btn.addEventListener("click", (event) => {
+      const target = event.currentTarget;
+      const row = target.getAttribute("data-row");
+      const dir = target.getAttribute("data-dir");
+      const rail = document.getElementById(`rail-${row}`);
+      if (!rail) return;
+      rail.scrollBy({
+        left: dir === "left" ? -420 : 420,
+        behavior: "smooth"
+      });
     });
   });
 }
