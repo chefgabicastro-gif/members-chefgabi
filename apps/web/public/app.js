@@ -18,6 +18,7 @@ const loginDescription = document.getElementById("loginDescription");
 const heroPill = document.getElementById("heroPill");
 const heroTitle = document.getElementById("heroTitle");
 const heroDescription = document.getElementById("heroDescription");
+const userEmailEl = document.getElementById("userEmail");
 
 let deferredPrompt = null;
 let token = localStorage.getItem("members_token");
@@ -56,6 +57,7 @@ async function login(email) {
   currentUser = data.user;
   localStorage.setItem("members_token", token);
   localStorage.setItem("members_email", data.user.email);
+  userEmailEl.textContent = data.user.email;
 }
 
 async function fetchRows() {
@@ -199,10 +201,12 @@ function setView() {
     loginSection.classList.add("hidden");
     dashboardSection.classList.remove("hidden");
     logoutBtn.classList.remove("hidden");
+    userEmailEl.textContent = localStorage.getItem("members_email") || "Area premium";
   } else {
     loginSection.classList.remove("hidden");
     dashboardSection.classList.add("hidden");
     logoutBtn.classList.add("hidden");
+    userEmailEl.textContent = "Convidada";
   }
 }
 

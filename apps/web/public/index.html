@@ -3,69 +3,87 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#111827" />
-    <title>Premium Streaming Members</title>
+    <meta name="theme-color" content="#0f1117" />
+    <title>Chef em Casa - Gabriella Castro</title>
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;700;800&family=Outfit:wght@500;700&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
     <div class="scene-bg"></div>
-    <header class="topbar">
-      <div class="brand-box">
-        <span class="dot"></span>
-        <div class="brand-texts">
-          <span id="brandName" class="brand">Prime Club</span>
-          <span id="brandTagline" class="brand-subtitle">Area de membros</span>
+    <div class="shell">
+      <aside class="sidebar">
+        <div class="brand-box">
+          <span class="dot"></span>
+          <div class="brand-texts">
+            <span id="brandName" class="brand">Chef em Casa</span>
+            <span id="brandTagline" class="brand-subtitle">Gabriella Castro</span>
+          </div>
         </div>
-      </div>
-      <div class="topbar-actions">
-        <button id="installBtn" class="btn ghost hidden">Instalar app</button>
-        <button id="logoutBtn" class="btn ghost hidden">Sair</button>
-      </div>
-    </header>
+        <nav class="menu">
+          <a class="menu-item active" href="#">Home</a>
+          <a class="menu-item" href="#rowsContainer">Catalogo</a>
+          <a class="menu-item" href="#rowsContainer">Minha trilha</a>
+          <a class="menu-item" href="#rowsContainer">Suporte</a>
+        </nav>
+        <div class="side-card">
+          <p>Entre pelo celular e instale o app para acesso rapido.</p>
+          <button id="installBtn" class="btn ghost hidden">Instalar app</button>
+        </div>
+      </aside>
 
-    <main class="container">
-      <section id="loginSection" class="login-shell">
-        <div class="login-glow"></div>
-        <h1 id="loginTitle">Area de membros premium</h1>
-        <p id="loginDescription">Visual de streaming, acesso instantaneo por compra e trilha de evolucao em um so lugar.</p>
-        <form id="loginForm" class="login-form">
-          <input id="emailInput" type="email" placeholder="seuemail@dominio.com" required />
-          <button type="submit" class="btn solid">Entrar agora</button>
-        </form>
-      </section>
+      <main class="container">
+        <header class="topbar">
+          <div class="welcome">
+            <span>Portal Premium</span>
+            <strong id="userEmail">Convidada</strong>
+          </div>
+          <div class="topbar-actions">
+            <button id="logoutBtn" class="btn ghost hidden">Sair</button>
+          </div>
+        </header>
 
-      <section id="dashboardSection" class="hidden">
-        <article class="hero">
-          <div class="hero-copy">
-            <span id="heroPill" class="pill">SAAS PREMIUM MEMBERS</span>
-            <h2 id="heroTitle">Seu ecossistema de produtos em formato streaming</h2>
-            <p id="heroDescription">Os produtos que voce comprou ficam liberados na hora. Os demais aparecem com desbloqueio inteligente para elevar seu LTV.</p>
-          </div>
-          <div class="hero-metrics">
-            <div class="metric">
-              <span id="unlockedMetric" class="value">0</span>
-              <span class="label">Liberados</span>
+        <section id="loginSection" class="login-shell">
+          <div class="login-glow"></div>
+          <h1 id="loginTitle">Bem-vinda a sua area premium</h1>
+          <p id="loginDescription">Acesse seus produtos liberados e destrave os proximos em uma experiencia linda e simples.</p>
+          <form id="loginForm" class="login-form">
+            <input id="emailInput" type="email" placeholder="seuemail@dominio.com" required />
+            <button type="submit" class="btn solid">Entrar</button>
+          </form>
+        </section>
+
+        <section id="dashboardSection" class="hidden">
+          <article class="hero">
+            <div class="hero-copy">
+              <span id="heroPill" class="pill">CHEF EM CASA PREMIUM</span>
+              <h2 id="heroTitle">Seu hub completo de produtos e aplicativos</h2>
+              <p id="heroDescription">Tudo liberado por compra automaticamente, com navegacao estilo aplicativo premium.</p>
             </div>
-            <div class="metric">
-              <span id="lockedMetric" class="value">0</span>
-              <span class="label">Bloqueados</span>
+            <div class="hero-metrics">
+              <div class="metric">
+                <span id="unlockedMetric" class="value">0</span>
+                <span class="label">Liberados</span>
+              </div>
+              <div class="metric">
+                <span id="lockedMetric" class="value">0</span>
+                <span class="label">Bloqueados</span>
+              </div>
+              <div class="metric">
+                <span id="journeyMetric" class="value">0%</span>
+                <span class="label">Jornada ativa</span>
+              </div>
             </div>
-            <div class="metric">
-              <span id="journeyMetric" class="value">0%</span>
-              <span class="label">Jornada ativa</span>
-            </div>
-          </div>
-        </article>
-        <div id="rowsContainer"></div>
-      </section>
-    </main>
+          </article>
+          <div id="rowsContainer"></div>
+        </section>
+      </main>
+    </div>
     <script src="/app.js"></script>
   </body>
 </html>
