@@ -12,6 +12,8 @@ const initialDb = {
   users: [],
   sessions: [],
   entitlements: [],
+  lessonProgress: [],
+  billingHistory: [],
   webhookEvents: [],
   products
 };
@@ -27,6 +29,8 @@ function readDb() {
   ensureDb();
   const raw = fs.readFileSync(dbPath, "utf8");
   const db = JSON.parse(raw);
+  if (!Array.isArray(db.lessonProgress)) db.lessonProgress = [];
+  if (!Array.isArray(db.billingHistory)) db.billingHistory = [];
   const catalogChanged =
     !Array.isArray(db.products) ||
     db.products.length !== products.length ||
@@ -55,6 +59,15 @@ export function createOrGetUserByEmail(email) {
       createdAt: new Date().toISOString()
     };
     db.users.push(user);
+    db.billingHistory.push({
+      id: crypto.randomUUID(),
+      userId: user.id,
+      date: new Date().toISOString(),
+      status: "paid",
+      amount: 0,
+      method: "card",
+      description: "Conta criada"
+    });
     writeDb(db);
   }
   return user;
@@ -131,6 +144,17 @@ export function grantEntitlement({ userId, productSlug, source }) {
     });
   }
 
+  db.billingHistory.push({
+    id: crypto.randomUUID(),
+    userId,
+    date: new Date().toISOString(),
+    status: "paid",
+    amount: products.find((p) => p.slug === productSlug)?.price || 0,
+    method: "card",
+    description: `Compra aprovada: ${productSlug}`,
+    source
+  });
+
   writeDb(db);
 }
 
@@ -172,6 +196,63 @@ export function listEntitlementsForUser(userId) {
 export function listWebhookEvents(limit = 50) {
   const db = readDb();
   return db.webhookEvents.slice(-limit).reverse();
+}
+
+export function getUserProfile(userId) {
+  const db = readDb();
+  const user = db.users.find((item) => item.id === userId);
+  if (!user) return null;
+  const entitlements = db.entitlements.filter(
+    (item) => item.userId === userId && item.status === "active"
+  );
+  return {
+    user,
+    subscription: {
+      plan: entitlements.length > 0 ? "Premium" : "Sem plano",
+      status: entitlements.length > 0 ? "active" : "inactive",
+      renewDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 30).toISOString(),
+      activeProducts: entitlements.length
+    }
+  };
+}
+
+export function getBillingHistory(userId, limit = 30) {
+  const db = readDb();
+  return db.billingHistory
+    .filter((item) => item.userId === userId)
+    .slice(-limit)
+    .reverse();
+}
+
+export function getProgressByProduct(userId, productSlug) {
+  const db = readDb();
+  return db.lessonProgress.filter(
+    (item) => item.userId === userId && item.productSlug === productSlug
+  );
+}
+
+export function upsertLessonProgress({ userId, productSlug, lessonId, watchedPercent, completed }) {
+  const db = readDb();
+  const existing = db.lessonProgress.find(
+    (item) => item.userId === userId && item.lessonId === lessonId
+  );
+  const now = new Date().toISOString();
+  if (existing) {
+    existing.watchedPercent = Math.max(existing.watchedPercent || 0, watchedPercent || 0);
+    existing.completed = Boolean(existing.completed || completed);
+    existing.updatedAt = now;
+  } else {
+    db.lessonProgress.push({
+      id: crypto.randomUUID(),
+      userId,
+      productSlug,
+      lessonId,
+      watchedPercent: watchedPercent || 0,
+      completed: Boolean(completed),
+      updatedAt: now
+    });
+  }
+  writeDb(db);
 }
 
 export function listUsers(limit = 100) {

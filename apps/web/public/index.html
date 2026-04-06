@@ -43,6 +43,9 @@
             <span>Portal Premium</span>
             <strong id="userEmail">Convidada</strong>
           </div>
+          <div class="search-wrap">
+            <input id="searchInput" type="search" placeholder="Buscar produto, plano ou categoria..." />
+          </div>
           <div class="topbar-actions">
             <button id="logoutBtn" class="btn ghost hidden">Sair</button>
           </div>
@@ -120,6 +123,19 @@
             </aside>
           </div>
         </section>
+
+        <section id="profileSection" class="hidden">
+          <div class="profile-grid">
+            <article class="right-card">
+              <h4>Conta Premium</h4>
+              <div id="subscriptionInfo" class="subscription-info"></div>
+            </article>
+            <article class="right-card">
+              <h4>Historico de cobrancas</h4>
+              <div id="billingList" class="billing-list"></div>
+            </article>
+          </div>
+        </section>
       </main>
     </div>
 
@@ -127,7 +143,7 @@
       <button class="mobile-item active" data-nav="home">Home</button>
       <button class="mobile-item" data-nav="catalogo">Catalogo</button>
       <button class="mobile-item" data-nav="trilha">Trilha</button>
-      <button class="mobile-item" data-nav="suporte">Suporte</button>
+      <button class="mobile-item" data-nav="perfil">Perfil</button>
     </nav>
 
     <script src="/app.js"></script>

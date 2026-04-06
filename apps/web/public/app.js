@@ -5,6 +5,7 @@
 const loginSection = document.getElementById("loginSection");
 const dashboardSection = document.getElementById("dashboardSection");
 const playerSection = document.getElementById("playerSection");
+const profileSection = document.getElementById("profileSection");
 const loginForm = document.getElementById("loginForm");
 const emailInput = document.getElementById("emailInput");
 const rowsContainer = document.getElementById("rowsContainer");
@@ -33,6 +34,9 @@ const achievementsList = document.getElementById("achievementsList");
 const recommendedList = document.getElementById("recommendedList");
 const backHomeBtn = document.getElementById("backHomeBtn");
 const openExternalBtn = document.getElementById("openExternalBtn");
+const searchInput = document.getElementById("searchInput");
+const subscriptionInfo = document.getElementById("subscriptionInfo");
+const billingList = document.getElementById("billingList");
 const menuItems = Array.from(document.querySelectorAll(".menu-item"));
 const mobileItems = Array.from(document.querySelectorAll(".mobile-item"));
 
@@ -40,6 +44,7 @@ let deferredPrompt = null;
 let token = localStorage.getItem("members_token");
 let featuredProduct = null;
 let productCache = [];
+let lessonProgressMap = {};
 
 function applyBrand(config) {
   if (!config || typeof config !== "object") return;
@@ -68,13 +73,22 @@ function setActiveNav(nav) {
 function showHome() {
   dashboardSection.classList.remove("hidden");
   playerSection.classList.add("hidden");
+  profileSection.classList.add("hidden");
   setActiveNav("home");
 }
 
 function showPlayer() {
   dashboardSection.classList.add("hidden");
   playerSection.classList.remove("hidden");
+  profileSection.classList.add("hidden");
   setActiveNav("trilha");
+}
+
+function showProfile() {
+  dashboardSection.classList.add("hidden");
+  playerSection.classList.add("hidden");
+  profileSection.classList.remove("hidden");
+  setActiveNav("perfil");
 }
 
 async function login(email) {
@@ -103,6 +117,28 @@ async function fetchProducts() {
   if (!response.ok) throw new Error("Falha ao carregar catalogo");
   const data = await response.json();
   return data.products || [];
+}
+
+async function searchProducts(query) {
+  const response = await fetch(`${API_BASE}/api/v1/products/search?q=${encodeURIComponent(query)}`, {
+    headers: authHeaders()
+  });
+  if (!response.ok) return [];
+  const data = await response.json();
+  return data.products || [];
+}
+
+async function fetchProfile() {
+  const response = await fetch(`${API_BASE}/api/v1/profile/me`, { headers: authHeaders() });
+  if (!response.ok) return null;
+  return response.json();
+}
+
+async function fetchBilling() {
+  const response = await fetch(`${API_BASE}/api/v1/billing/history?limit=20`, { headers: authHeaders() });
+  if (!response.ok) return [];
+  const data = await response.json();
+  return data.items || [];
 }
 
 function cardTemplate(product) {
@@ -142,7 +178,7 @@ function cardTemplate(product) {
 
 function railTemplate(row) {
   return `
-    <section class="row-block" id="row-${row.id}">
+    <section class="row-block reveal" id="row-${row.id}">
       <div class="row-head">
         <h3 class="row-title">${row.title}</h3>
         <div class="row-nav">
@@ -167,6 +203,36 @@ function setHeroFeatured(products) {
   heroPanel.style.backgroundImage = `linear-gradient(110deg, rgba(255, 140, 66, 0.2), rgba(17, 24, 39, 0.82)), linear-gradient(150deg, #131a2a, #101521), url('${featuredProduct.cover}')`;
   heroPanel.style.backgroundSize = "cover";
   heroPanel.style.backgroundPosition = "center";
+}
+
+function formatDate(value) {
+  const date = new Date(value);
+  return date.toLocaleDateString("pt-BR");
+}
+
+function renderProfile(profile, billingItems) {
+  if (!profile) return;
+  const subscription = profile.subscription || {};
+  subscriptionInfo.innerHTML = `
+    <div class="sub-row"><span>Plano</span><strong>${subscription.plan || "-"}</strong></div>
+    <div class="sub-row"><span>Status</span><strong>${subscription.status || "-"}</strong></div>
+    <div class="sub-row"><span>Produtos ativos</span><strong>${subscription.activeProducts || 0}</strong></div>
+    <div class="sub-row"><span>Proxima renovacao</span><strong>${subscription.renewDate ? formatDate(subscription.renewDate) : "-"}</strong></div>
+  `;
+
+  billingList.innerHTML = billingItems.length
+    ? billingItems
+        .map(
+          (item) => `
+      <div class="billing-item">
+        <strong>${item.description}</strong>
+        <span>${formatDate(item.date)} • ${item.status}</span>
+        <small>R$ ${Number(item.amount || 0)}</small>
+      </div>
+    `
+        )
+        .join("")
+    : "<p class='muted'>Sem cobrancas no historico.</p>";
 }
 
 function attachRowEvents() {
@@ -228,21 +294,33 @@ function renderPlayer(content) {
   playerHero.style.backgroundSize = "cover";
   playerHero.style.backgroundPosition = "center";
 
-  const episodes = content.modules.flatMap((module) => module.lessons.map((lesson, index) => ({ ...lesson, moduleTitle: module.title, index })));
+  lessonProgressMap = Object.fromEntries((content.lessonProgress || []).map((item) => [item.lessonId, item]));
+  const episodes = content.modules.flatMap((module) =>
+    module.lessons.map((lesson, index) => ({ ...lesson, moduleTitle: module.title, index }))
+  );
   episodesList.innerHTML = episodes
     .map(
       (lesson, idx) => `
-      <article class="episode ${idx === 0 ? "current" : ""}">
+      <article class="episode ${idx === 0 ? "current" : ""}" data-lesson-id="${lesson.id}" data-product-slug="${content.product.slug}">
         <div class="episode-thumb" style="background-image:url('${lesson.thumb}')"></div>
         <div>
           <h4>${lesson.title}</h4>
           <p>${lesson.moduleTitle}</p>
-          <span>${lesson.durationMinutes} min</span>
+          <span>${lesson.durationMinutes} min • ${lessonProgressMap[lesson.id]?.watchedPercent || 0}%</span>
         </div>
       </article>
     `
     )
     .join("");
+
+  episodesList.querySelectorAll(".episode").forEach((episodeEl) => {
+    episodeEl.addEventListener("click", async () => {
+      const lessonId = episodeEl.getAttribute("data-lesson-id");
+      const productSlug = episodeEl.getAttribute("data-product-slug");
+      await saveLessonProgress(productSlug, lessonId);
+      episodeEl.classList.add("current");
+    });
+  });
 
   achievementsList.innerHTML = (content.achievements || [])
     .map(
@@ -308,8 +386,25 @@ async function openProductInternal(productSlug) {
   showPlayer();
 }
 
+async function saveLessonProgress(productSlug, lessonId) {
+  const prev = lessonProgressMap[lessonId]?.watchedPercent || 0;
+  const watchedPercent = Math.min(100, prev + 25);
+  const completed = watchedPercent >= 100;
+  await fetch(`${API_BASE}/api/v1/progress/${lessonId}`, {
+    method: "PUT",
+    headers: authHeaders(),
+    body: JSON.stringify({ productSlug, watchedPercent, completed })
+  });
+  lessonProgressMap[lessonId] = { watchedPercent, completed };
+}
+
 async function loadDashboard() {
-  const [rows, products] = await Promise.all([fetchRows(), fetchProducts()]);
+  const [rows, products, profile, billingItems] = await Promise.all([
+    fetchRows(),
+    fetchProducts(),
+    fetchProfile(),
+    fetchBilling()
+  ]);
   productCache = products;
   const continueWatching = {
     id: "continue",
@@ -322,6 +417,7 @@ async function loadDashboard() {
     items: products.slice(0, 8)
   };
   renderRows([continueWatching, ...rows, trending], products);
+  renderProfile(profile, billingItems);
 }
 
 function setView() {
@@ -382,13 +478,38 @@ heroDetailsBtn.addEventListener("click", () => {
   item.addEventListener("click", (event) => {
     event.preventDefault();
     const nav = item.dataset.nav;
-    setActiveNav(nav);
     if (nav === "home") {
       showHome();
       return;
     }
+    if (nav === "trilha") {
+      if (!playerSection.classList.contains("hidden")) {
+        return;
+      }
+      if (featuredProduct && featuredProduct.isUnlocked) {
+        openProductInternal(featuredProduct.slug);
+      } else {
+        rowsContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      return;
+    }
+    if (nav === "perfil") {
+      showProfile();
+      return;
+    }
     rowsContainer.scrollIntoView({ behavior: "smooth", block: "start" });
   });
+});
+
+searchInput.addEventListener("input", async () => {
+  const q = searchInput.value.trim();
+  if (q.length < 2) {
+    await loadDashboard();
+    return;
+  }
+  const results = await searchProducts(q);
+  const searchRow = { id: "search", title: `Resultados para "${q}"`, items: results };
+  renderRows([searchRow], productCache);
 });
 
 window.addEventListener("beforeinstallprompt", (event) => {

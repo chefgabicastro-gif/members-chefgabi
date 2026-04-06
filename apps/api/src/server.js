@@ -7,7 +7,10 @@ import {
   createOrGetUserByEmail,
   createSession,
   findUserByEmail,
+  getBillingHistory,
   getHomeRows,
+  getProgressByProduct,
+  getUserProfile,
   grantEntitlement,
   hasWebhookEvent,
   listEntitlementsForUser,
@@ -15,7 +18,8 @@ import {
   listUsers,
   listWebhookEvents,
   revokeEntitlement,
-  saveWebhookEvent
+  saveWebhookEvent,
+  upsertLessonProgress
 } from "./lib/db.js";
 import { products } from "./config/products.js";
 import { normalizeGgCheckoutWebhook } from "./integrations/gg-checkout.js";
@@ -98,6 +102,24 @@ app.get("/api/v1/products", requireAuth, (req, res) => {
   res.json({ products: items });
 });
 
+app.get("/api/v1/products/search", requireAuth, (req, res) => {
+  const q = String(req.query.q || "").trim().toLowerCase();
+  const items = listProductsForUser(req.user.id);
+  if (!q) {
+    return res.json({ products: items.slice(0, 12) });
+  }
+  const words = q.split(/\s+/).filter(Boolean);
+  const scored = items
+    .map((item) => {
+      const hay = `${item.title} ${item.tagline || ""} ${item.description || ""} ${item.category || ""}`.toLowerCase();
+      const score = words.reduce((acc, word) => acc + (hay.includes(word) ? 1 : 0), 0);
+      return { item, score };
+    })
+    .filter((entry) => entry.score > 0)
+    .sort((a, b) => b.score - a.score || Number(b.item.isUnlocked) - Number(a.item.isUnlocked));
+  return res.json({ products: scored.map((entry) => entry.item) });
+});
+
 app.get("/api/v1/products/:productSlug/access", requireAuth, (req, res) => {
   const productSlug = req.params.productSlug;
   const items = listProductsForUser(req.user.id);
@@ -139,7 +161,38 @@ app.get("/api/v1/products/:productSlug/content", requireAuth, (req, res) => {
   }
 
   const externalAccessUrl = getAccessLink(productSlug);
-  return res.json({ ...content, externalAccessUrl });
+  const lessonProgress = getProgressByProduct(req.user.id, productSlug);
+  return res.json({ ...content, externalAccessUrl, lessonProgress });
+});
+
+app.get("/api/v1/profile/me", requireAuth, (req, res) => {
+  const profile = getUserProfile(req.user.id);
+  if (!profile) {
+    return res.status(404).json({ error: "Profile not found" });
+  }
+  return res.json(profile);
+});
+
+app.get("/api/v1/billing/history", requireAuth, (req, res) => {
+  const limit = Number(req.query.limit || 20);
+  const items = getBillingHistory(req.user.id, Math.min(Math.max(limit, 1), 200));
+  return res.json({ items });
+});
+
+app.put("/api/v1/progress/:lessonId", requireAuth, (req, res) => {
+  const lessonId = req.params.lessonId;
+  const { productSlug, watchedPercent, completed } = req.body || {};
+  if (!productSlug || typeof productSlug !== "string") {
+    return res.status(400).json({ error: "productSlug is required" });
+  }
+  upsertLessonProgress({
+    userId: req.user.id,
+    productSlug,
+    lessonId,
+    watchedPercent: Number(watchedPercent || 0),
+    completed: Boolean(completed)
+  });
+  return res.json({ success: true });
 });
 
 app.get("/api/v1/home/rows", requireAuth, (req, res) => {
