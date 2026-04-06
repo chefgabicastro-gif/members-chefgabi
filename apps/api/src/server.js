@@ -21,6 +21,7 @@ import { products } from "./config/products.js";
 import { normalizeGgCheckoutWebhook } from "./integrations/gg-checkout.js";
 import { getCheckoutUrl } from "./config/checkout.js";
 import { getAccessLink } from "./config/access-links.js";
+import { buildProductContent } from "./config/content.js";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -118,6 +119,27 @@ app.get("/api/v1/products/:productSlug/access", requireAuth, (req, res) => {
   }
 
   return res.json({ accessUrl, productSlug });
+});
+
+app.get("/api/v1/products/:productSlug/content", requireAuth, (req, res) => {
+  const productSlug = req.params.productSlug;
+  const items = listProductsForUser(req.user.id);
+  const product = items.find((item) => item.slug === productSlug);
+  if (!product) {
+    return res.status(404).json({ error: "Product not found" });
+  }
+
+  if (!product.isUnlocked) {
+    return res.status(403).json({ error: "Product is locked for this user" });
+  }
+
+  const content = buildProductContent(productSlug);
+  if (!content) {
+    return res.status(404).json({ error: "Content not found for this product" });
+  }
+
+  const externalAccessUrl = getAccessLink(productSlug);
+  return res.json({ ...content, externalAccessUrl });
 });
 
 app.get("/api/v1/home/rows", requireAuth, (req, res) => {

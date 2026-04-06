@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;700;800&family=Outfit:wght@500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;700;800&family=Outfit:wght@500;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/styles.css" />
@@ -26,13 +26,13 @@
           </div>
         </div>
         <nav class="menu">
-          <a class="menu-item active" href="#">Home</a>
-          <a class="menu-item" href="#rowsContainer">Catalogo</a>
-          <a class="menu-item" href="#rowsContainer">Minha trilha</a>
-          <a class="menu-item" href="#rowsContainer">Suporte</a>
+          <a class="menu-item active" href="#" data-nav="home">Home</a>
+          <a class="menu-item" href="#" data-nav="catalogo">Catalogo</a>
+          <a class="menu-item" href="#" data-nav="trilha">Minha trilha</a>
+          <a class="menu-item" href="#" data-nav="suporte">Suporte</a>
         </nav>
         <div class="side-card">
-          <p>Entre pelo celular e instale o app para acesso rapido.</p>
+          <p>Instale o app e acompanhe aulas pelo celular com acesso rapido.</p>
           <button id="installBtn" class="btn ghost hidden">Instalar app</button>
         </div>
       </aside>
@@ -50,8 +50,8 @@
 
         <section id="loginSection" class="login-shell">
           <div class="login-glow"></div>
-          <h1 id="loginTitle">Bem-vinda a sua area premium</h1>
-          <p id="loginDescription">Acesse seus produtos liberados e destrave os proximos em uma experiencia linda e simples.</p>
+          <h1 id="loginTitle">Bem-vinda ao Chef em Casa</h1>
+          <p id="loginDescription">Entre para acessar sua experiencia premium completa.</p>
           <form id="loginForm" class="login-form">
             <input id="emailInput" type="email" placeholder="seuemail@dominio.com" required />
             <button type="submit" class="btn solid">Entrar</button>
@@ -62,11 +62,11 @@
           <article id="heroPanel" class="hero">
             <div class="hero-copy">
               <span id="heroPill" class="pill">CHEF EM CASA PREMIUM</span>
-              <h2 id="heroTitle">Seu hub completo de produtos e aplicativos</h2>
-              <p id="heroDescription">Tudo liberado por compra automaticamente, com navegacao estilo aplicativo premium.</p>
+              <h2 id="heroTitle">Seu ecossistema completo em formato streaming</h2>
+              <p id="heroDescription">Aprenda, execute e escale com uma plataforma premium no estilo Netflix.</p>
               <div class="hero-actions">
                 <button id="heroWatchBtn" class="btn solid">Assistir agora</button>
-                <button id="heroDetailsBtn" class="btn ghost">Mais detalhes</button>
+                <button id="heroDetailsBtn" class="btn ghost">Ver catalogo</button>
               </div>
             </div>
             <div class="hero-metrics">
@@ -86,8 +86,50 @@
           </article>
           <div id="rowsContainer"></div>
         </section>
+
+        <section id="playerSection" class="hidden">
+          <div class="player-top">
+            <button id="backHomeBtn" class="btn ghost">Voltar</button>
+            <button id="openExternalBtn" class="btn ghost hidden">Abrir app externo</button>
+          </div>
+          <article id="playerHero" class="player-hero">
+            <div class="player-overlay">
+              <span id="playerTag" class="pill">Modulo em destaque</span>
+              <h2 id="playerTitle">Titulo do produto</h2>
+              <p id="playerDesc">Descricao da trilha.</p>
+            </div>
+          </article>
+
+          <div class="player-grid">
+            <section>
+              <div class="section-head">
+                <h3>Episodios</h3>
+              </div>
+              <div id="episodesList" class="episodes-list"></div>
+            </section>
+
+            <aside class="right-panel">
+              <div class="right-card">
+                <h4>Conquistas</h4>
+                <div id="achievementsList" class="achievements-list"></div>
+              </div>
+              <div class="right-card">
+                <h4>Recomendado para voce</h4>
+                <div id="recommendedList" class="mini-list"></div>
+              </div>
+            </aside>
+          </div>
+        </section>
       </main>
     </div>
+
+    <nav class="mobile-nav">
+      <button class="mobile-item active" data-nav="home">Home</button>
+      <button class="mobile-item" data-nav="catalogo">Catalogo</button>
+      <button class="mobile-item" data-nav="trilha">Trilha</button>
+      <button class="mobile-item" data-nav="suporte">Suporte</button>
+    </nav>
+
     <script src="/app.js"></script>
   </body>
 </html>

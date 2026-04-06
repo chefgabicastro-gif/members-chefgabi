@@ -1,8 +1,10 @@
-let API_BASE =
+﻿let API_BASE =
   localStorage.getItem("apiBase") ||
   (window.location.hostname === "localhost" ? "http://localhost:4000" : "");
+
 const loginSection = document.getElementById("loginSection");
 const dashboardSection = document.getElementById("dashboardSection");
+const playerSection = document.getElementById("playerSection");
 const loginForm = document.getElementById("loginForm");
 const emailInput = document.getElementById("emailInput");
 const rowsContainer = document.getElementById("rowsContainer");
@@ -22,11 +24,22 @@ const userEmailEl = document.getElementById("userEmail");
 const heroPanel = document.getElementById("heroPanel");
 const heroWatchBtn = document.getElementById("heroWatchBtn");
 const heroDetailsBtn = document.getElementById("heroDetailsBtn");
+const playerHero = document.getElementById("playerHero");
+const playerTag = document.getElementById("playerTag");
+const playerTitle = document.getElementById("playerTitle");
+const playerDesc = document.getElementById("playerDesc");
+const episodesList = document.getElementById("episodesList");
+const achievementsList = document.getElementById("achievementsList");
+const recommendedList = document.getElementById("recommendedList");
+const backHomeBtn = document.getElementById("backHomeBtn");
+const openExternalBtn = document.getElementById("openExternalBtn");
+const menuItems = Array.from(document.querySelectorAll(".menu-item"));
+const mobileItems = Array.from(document.querySelectorAll(".mobile-item"));
 
 let deferredPrompt = null;
 let token = localStorage.getItem("members_token");
-let currentUser = null;
-let currentProducts = [];
+let featuredProduct = null;
+let productCache = [];
 
 function applyBrand(config) {
   if (!config || typeof config !== "object") return;
@@ -47,18 +60,32 @@ function authHeaders() {
   };
 }
 
+function setActiveNav(nav) {
+  menuItems.forEach((item) => item.classList.toggle("active", item.dataset.nav === nav));
+  mobileItems.forEach((item) => item.classList.toggle("active", item.dataset.nav === nav));
+}
+
+function showHome() {
+  dashboardSection.classList.remove("hidden");
+  playerSection.classList.add("hidden");
+  setActiveNav("home");
+}
+
+function showPlayer() {
+  dashboardSection.classList.add("hidden");
+  playerSection.classList.remove("hidden");
+  setActiveNav("trilha");
+}
+
 async function login(email) {
   const response = await fetch(`${API_BASE}/api/v1/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email })
   });
-  if (!response.ok) {
-    throw new Error("Falha no login");
-  }
+  if (!response.ok) throw new Error("Falha no login");
   const data = await response.json();
   token = data.token;
-  currentUser = data.user;
   localStorage.setItem("members_token", token);
   localStorage.setItem("members_email", data.user.email);
   userEmailEl.textContent = data.user.email;
@@ -66,18 +93,14 @@ async function login(email) {
 
 async function fetchRows() {
   const response = await fetch(`${API_BASE}/api/v1/home/rows`, { headers: authHeaders() });
-  if (!response.ok) {
-    throw new Error("Sessao invalida");
-  }
+  if (!response.ok) throw new Error("Sessao invalida");
   const data = await response.json();
   return data.rows || [];
 }
 
 async function fetchProducts() {
   const response = await fetch(`${API_BASE}/api/v1/products`, { headers: authHeaders() });
-  if (!response.ok) {
-    throw new Error("Falha ao carregar catalogo");
-  }
+  if (!response.ok) throw new Error("Falha ao carregar catalogo");
   const data = await response.json();
   return data.products || [];
 }
@@ -91,12 +114,7 @@ function cardTemplate(product) {
     ? "Entrar agora"
     : hasCheckout
       ? `Desbloquear ${formattedPrice}`
-      : "Disponivel no checkout principal";
-  const hint = product.isUnlocked
-    ? "Acesso ativo no seu login."
-    : hasCheckout
-      ? "Ao concluir o checkout GG, o acesso libera automaticamente."
-      : "Este item e liberado como order bump durante um checkout principal.";
+      : "Disponivel no checkout";
 
   return `
     <article class="card">
@@ -106,7 +124,7 @@ function cardTemplate(product) {
       </div>
       <div class="card-body">
         <h4>${product.title}</h4>
-        <small>${product.tagline || ""}</small>
+        <small>${product.tagline || "Premium"}</small>
         <p>${product.description}</p>
         <div class="meta">
           <span>${product.level || "Premium"}</span>
@@ -117,7 +135,6 @@ function cardTemplate(product) {
             ${buttonLabel}
           </button>
         </div>
-        <div class="hint">${hint}</div>
       </div>
     </article>
   `;
@@ -125,7 +142,7 @@ function cardTemplate(product) {
 
 function railTemplate(row) {
   return `
-    <section class="row-block">
+    <section class="row-block" id="row-${row.id}">
       <div class="row-head">
         <h3 class="row-title">${row.title}</h3>
         <div class="row-nav">
@@ -141,42 +158,18 @@ function railTemplate(row) {
 }
 
 function setHeroFeatured(products) {
-  const featured = products.find((item) => item.isUnlocked) || products[0];
-  if (!featured) return;
-  heroTitle.textContent = `${featured.title} - ${featured.tagline || "Conteudo premium"}`;
-  heroDescription.textContent = featured.description;
-  heroPill.textContent = featured.isUnlocked ? "LIBERADO AGORA" : "DESTAQUE DA SEMANA";
-  heroPanel.style.backgroundImage = `linear-gradient(110deg, rgba(255, 140, 66, 0.2), rgba(17, 24, 39, 0.82)), linear-gradient(150deg, #131a2a, #101521), url('${featured.cover}')`;
+  featuredProduct = products.find((item) => item.isUnlocked) || products[0] || null;
+  if (!featuredProduct) return;
+
+  heroTitle.textContent = `${featuredProduct.title} - ${featuredProduct.tagline || "Destaque"}`;
+  heroDescription.textContent = featuredProduct.description;
+  heroPill.textContent = featuredProduct.isUnlocked ? "LIBERADO AGORA" : "DESTAQUE DA SEMANA";
+  heroPanel.style.backgroundImage = `linear-gradient(110deg, rgba(255, 140, 66, 0.2), rgba(17, 24, 39, 0.82)), linear-gradient(150deg, #131a2a, #101521), url('${featuredProduct.cover}')`;
   heroPanel.style.backgroundSize = "cover";
   heroPanel.style.backgroundPosition = "center";
-  heroWatchBtn.onclick = async () => {
-    if (featured.isUnlocked) {
-      await openUnlockedProduct(featured.slug);
-      return;
-    }
-    await goToCheckout(featured.slug);
-  };
-  heroDetailsBtn.onclick = () => {
-    window.location.hash = "#rowsContainer";
-  };
 }
 
-function renderRows(rows, products) {
-  if (!rows.length) {
-    rowsContainer.innerHTML = "<p>Nenhum produto encontrado.</p>";
-    return;
-  }
-
-  const unlockedCount = products.filter((item) => item.isUnlocked).length;
-  const lockedCount = products.length - unlockedCount;
-  const journeyPct = products.length ? Math.round((unlockedCount / products.length) * 100) : 0;
-  unlockedMetric.textContent = String(unlockedCount);
-  lockedMetric.textContent = String(lockedCount);
-  journeyMetric.textContent = `${journeyPct}%`;
-  currentProducts = products;
-  setHeroFeatured(products);
-  rowsContainer.innerHTML = rows.map((row) => railTemplate(row)).join("");
-
+function attachRowEvents() {
   rowsContainer.querySelectorAll(".cta-unlock").forEach((btn) => {
     btn.addEventListener("click", async (event) => {
       const slug = event.currentTarget.getAttribute("data-slug");
@@ -187,23 +180,32 @@ function renderRows(rows, products) {
   rowsContainer.querySelectorAll(".cta-enter").forEach((btn) => {
     btn.addEventListener("click", async (event) => {
       const slug = event.currentTarget.getAttribute("data-slug");
-      await openUnlockedProduct(slug);
+      await openProductInternal(slug);
     });
   });
 
   rowsContainer.querySelectorAll(".row-btn").forEach((btn) => {
     btn.addEventListener("click", (event) => {
-      const target = event.currentTarget;
-      const row = target.getAttribute("data-row");
-      const dir = target.getAttribute("data-dir");
+      const row = event.currentTarget.getAttribute("data-row");
+      const dir = event.currentTarget.getAttribute("data-dir");
       const rail = document.getElementById(`rail-${row}`);
       if (!rail) return;
-      rail.scrollBy({
-        left: dir === "left" ? -420 : 420,
-        behavior: "smooth"
-      });
+      rail.scrollBy({ left: dir === "left" ? -420 : 420, behavior: "smooth" });
     });
   });
+}
+
+function renderRows(rows, products) {
+  const unlockedCount = products.filter((item) => item.isUnlocked).length;
+  const lockedCount = products.length - unlockedCount;
+  const journeyPct = products.length ? Math.round((unlockedCount / products.length) * 100) : 0;
+  unlockedMetric.textContent = String(unlockedCount);
+  lockedMetric.textContent = String(lockedCount);
+  journeyMetric.textContent = `${journeyPct}%`;
+
+  setHeroFeatured(products);
+  rowsContainer.innerHTML = rows.map((row) => railTemplate(row)).join("");
+  attachRowEvents();
 }
 
 async function goToCheckout(productSlug) {
@@ -215,31 +217,111 @@ async function goToCheckout(productSlug) {
     alert(data.error || "Checkout indisponivel para este produto.");
     return;
   }
-
   window.open(data.checkoutUrl, "_blank", "noopener,noreferrer");
 }
 
-async function openUnlockedProduct(productSlug) {
-  const response = await fetch(`${API_BASE}/api/v1/products/${productSlug}/access`, {
+function renderPlayer(content) {
+  playerTitle.textContent = content.product.title;
+  playerDesc.textContent = content.product.description;
+  playerTag.textContent = content.product.tagline || "Conteudo premium";
+  playerHero.style.backgroundImage = `linear-gradient(180deg, rgba(8, 11, 18, 0.15), rgba(7, 10, 18, 0.82)), url('${content.product.cover}')`;
+  playerHero.style.backgroundSize = "cover";
+  playerHero.style.backgroundPosition = "center";
+
+  const episodes = content.modules.flatMap((module) => module.lessons.map((lesson, index) => ({ ...lesson, moduleTitle: module.title, index })));
+  episodesList.innerHTML = episodes
+    .map(
+      (lesson, idx) => `
+      <article class="episode ${idx === 0 ? "current" : ""}">
+        <div class="episode-thumb" style="background-image:url('${lesson.thumb}')"></div>
+        <div>
+          <h4>${lesson.title}</h4>
+          <p>${lesson.moduleTitle}</p>
+          <span>${lesson.durationMinutes} min</span>
+        </div>
+      </article>
+    `
+    )
+    .join("");
+
+  achievementsList.innerHTML = (content.achievements || [])
+    .map(
+      (item) => `
+      <div class="achievement-item">
+        <div class="achievement-row">
+          <strong>${item.title}</strong>
+          <span>${item.progress}%</span>
+        </div>
+        <div class="progress"><span style="width:${item.progress}%"></span></div>
+      </div>
+    `
+    )
+    .join("");
+
+  recommendedList.innerHTML = (content.recommended || [])
+    .map(
+      (item) => `
+      <button class="mini-card" data-slug="${item.slug}">
+        <div class="mini-cover" style="background-image:url('${item.cover}')"></div>
+        <div>
+          <strong>${item.title}</strong>
+          <p>${item.tagline || "Recomendado"}</p>
+        </div>
+      </button>
+    `
+    )
+    .join("");
+
+  recommendedList.querySelectorAll(".mini-card").forEach((btn) => {
+    btn.addEventListener("click", async (event) => {
+      const slug = event.currentTarget.getAttribute("data-slug");
+      const product = productCache.find((item) => item.slug === slug);
+      if (!product) return;
+      if (!product.isUnlocked && product.hasCheckout) {
+        await goToCheckout(slug);
+        return;
+      }
+      if (product.isUnlocked) {
+        await openProductInternal(slug);
+      }
+    });
+  });
+
+  if (content.externalAccessUrl) {
+    openExternalBtn.classList.remove("hidden");
+    openExternalBtn.onclick = () => window.open(content.externalAccessUrl, "_blank", "noopener,noreferrer");
+  } else {
+    openExternalBtn.classList.add("hidden");
+  }
+}
+
+async function openProductInternal(productSlug) {
+  const response = await fetch(`${API_BASE}/api/v1/products/${productSlug}/content`, {
     headers: authHeaders()
   });
   const data = await response.json();
   if (!response.ok) {
-    alert(data.error || "Acesso ainda nao configurado para este produto.");
+    alert(data.error || "Conteudo indisponivel para este produto.");
     return;
   }
-
-  window.open(data.accessUrl, "_blank", "noopener,noreferrer");
+  renderPlayer(data);
+  showPlayer();
 }
 
 async function loadDashboard() {
   const [rows, products] = await Promise.all([fetchRows(), fetchProducts()]);
+  productCache = products;
   const continueWatching = {
     id: "continue",
-    title: "Continue de onde parou",
-    items: products.filter((p) => p.isUnlocked).slice(0, 2)
+    title: "Continue assistindo",
+    items: products.filter((p) => p.isUnlocked).slice(0, 8)
   };
-  renderRows([continueWatching, ...rows], products);
+  const trending = {
+    id: "trending",
+    title: "Conteudo em alta",
+    items: products.slice(0, 8)
+  };
+  renderRows([continueWatching, ...rows, trending], products);
 }
 
 function setView() {
@@ -248,9 +330,11 @@ function setView() {
     dashboardSection.classList.remove("hidden");
     logoutBtn.classList.remove("hidden");
     userEmailEl.textContent = localStorage.getItem("members_email") || "Area premium";
+    showHome();
   } else {
     loginSection.classList.remove("hidden");
     dashboardSection.classList.add("hidden");
+    playerSection.classList.add("hidden");
     logoutBtn.classList.add("hidden");
     userEmailEl.textContent = "Convidada";
   }
@@ -271,9 +355,40 @@ logoutBtn.addEventListener("click", () => {
   localStorage.removeItem("members_token");
   localStorage.removeItem("members_email");
   token = "";
-  currentUser = null;
   rowsContainer.innerHTML = "";
   setView();
+});
+
+backHomeBtn.addEventListener("click", () => {
+  showHome();
+});
+
+heroWatchBtn.addEventListener("click", async () => {
+  if (!featuredProduct) return;
+  if (featuredProduct.isUnlocked) {
+    await openProductInternal(featuredProduct.slug);
+    return;
+  }
+  if (featuredProduct.hasCheckout) {
+    await goToCheckout(featuredProduct.slug);
+  }
+});
+
+heroDetailsBtn.addEventListener("click", () => {
+  rowsContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+});
+
+[...menuItems, ...mobileItems].forEach((item) => {
+  item.addEventListener("click", (event) => {
+    event.preventDefault();
+    const nav = item.dataset.nav;
+    setActiveNav(nav);
+    if (nav === "home") {
+      showHome();
+      return;
+    }
+    rowsContainer.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
 });
 
 window.addEventListener("beforeinstallprompt", (event) => {
@@ -294,12 +409,9 @@ window.addEventListener("load", async () => {
   try {
     const brandResponse = await fetch("/brand.json");
     if (brandResponse.ok) {
-      const brandConfig = await brandResponse.json();
-      applyBrand(brandConfig);
+      applyBrand(await brandResponse.json());
     }
-  } catch (_error) {
-    // Sem bloqueio se brand.json falhar.
-  }
+  } catch (_error) {}
 
   try {
     const configResponse = await fetch("/config.json");
@@ -309,13 +421,12 @@ window.addEventListener("load", async () => {
         API_BASE = config.apiBase;
       }
     }
-  } catch (_error) {
-    // Fallback silencioso para API local.
-  }
+  } catch (_error) {}
 
   if ("serviceWorker" in navigator) {
     await navigator.serviceWorker.register("/sw.js");
   }
+
   setView();
   if (token) {
     try {
