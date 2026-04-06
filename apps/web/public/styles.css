@@ -57,9 +57,11 @@ body {
 .brand-logo {
   width: min(220px, 100%);
   height: auto;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: #000;
+  border-radius: 0;
+  border: 0;
+  background: transparent;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 8px 22px rgba(255, 106, 48, 0.18));
 }
 
 .brand-texts {
@@ -240,9 +242,11 @@ body {
   z-index: 1;
   width: min(360px, 84vw);
   height: auto;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: #000;
+  border-radius: 0;
+  border: 0;
+  background: transparent;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 12px 30px rgba(255, 106, 48, 0.2));
   margin-bottom: 14px;
 }
 
