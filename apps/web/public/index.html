@@ -1,9 +1,9 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0f1117" />
+    <meta name="theme-color" content="#0d1018" />
     <title>Chef em Casa - Gabriella Castro</title>
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -25,77 +25,93 @@
             <span id="brandTagline" class="brand-subtitle">Gabriella Castro</span>
           </div>
         </div>
+
         <nav class="menu">
           <a class="menu-item active" href="#" data-nav="home">Home</a>
           <a class="menu-item" href="#" data-nav="catalogo">Catalogo</a>
           <a class="menu-item" href="#" data-nav="trilha">Minha trilha</a>
+          <a class="menu-item" href="#" data-nav="perfil">Perfil</a>
           <a class="menu-item" href="#" data-nav="suporte">Suporte</a>
         </nav>
+
         <div class="side-card">
-          <p>Instale o app e acompanhe aulas pelo celular com acesso rapido.</p>
+          <p>Instale o app e acompanhe aulas no celular com acesso rapido.</p>
           <button id="installBtn" class="btn ghost hidden">Instalar app</button>
         </div>
       </aside>
 
       <main class="container">
         <header class="topbar">
-          <div class="welcome">
-            <span>Portal Premium</span>
-            <strong id="userEmail">Convidada</strong>
+          <div class="top-left">
+            <div class="welcome">
+              <span>Portal Premium</span>
+              <strong id="userEmail">Convidada</strong>
+            </div>
+            <nav class="top-nav">
+              <button class="top-nav-item active" data-nav="home">Inicio</button>
+              <button class="top-nav-item" data-nav="catalogo">Catalogo</button>
+              <button class="top-nav-item" data-nav="trilha">Continue assistindo</button>
+              <button class="top-nav-item" data-nav="perfil">Conta</button>
+            </nav>
           </div>
-          <div class="search-wrap">
-            <input id="searchInput" type="search" placeholder="Buscar produto, plano ou categoria..." />
-          </div>
-          <div class="topbar-actions">
+          <div class="top-right">
+            <div class="search-wrap">
+              <input id="searchInput" type="search" placeholder="Buscar produto, plano ou categoria..." />
+            </div>
             <button id="logoutBtn" class="btn ghost hidden">Sair</button>
           </div>
         </header>
 
-        <section id="loginSection" class="login-shell">
+        <section id="loginSection" class="panel login-shell">
           <div class="login-glow"></div>
           <h1 id="loginTitle">Bem-vinda ao Chef em Casa</h1>
-          <p id="loginDescription">Entre para acessar sua experiencia premium completa.</p>
+          <p id="loginDescription">Entre para acessar seus produtos liberados e acompanhar sua trilha completa.</p>
           <form id="loginForm" class="login-form">
             <input id="emailInput" type="email" placeholder="seuemail@dominio.com" required />
             <button type="submit" class="btn solid">Entrar</button>
           </form>
         </section>
 
-        <section id="dashboardSection" class="hidden">
-          <article id="heroPanel" class="hero">
-            <div class="hero-copy">
-              <span id="heroPill" class="pill">CHEF EM CASA PREMIUM</span>
-              <h2 id="heroTitle">Seu ecossistema completo em formato streaming</h2>
-              <p id="heroDescription">Aprenda, execute e escale com uma plataforma premium no estilo Netflix.</p>
-              <div class="hero-actions">
-                <button id="heroWatchBtn" class="btn solid">Assistir agora</button>
-                <button id="heroDetailsBtn" class="btn ghost">Ver catalogo</button>
+        <section id="dashboardSection" class="view-panel hidden">
+          <article id="heroCarousel" class="hero-carousel panel">
+            <div class="hero-media" id="heroMedia"></div>
+            <div class="hero-layer">
+              <div class="hero-content">
+                <span id="heroPill" class="pill">CHEF EM CASA PREMIUM</span>
+                <h2 id="heroTitle">Seu ecossistema de produtos e apps</h2>
+                <p id="heroDescription">Area de membros com design premium e experiencia de streaming.</p>
+                <div class="hero-actions">
+                  <button id="heroWatchBtn" class="btn solid">Assistir agora</button>
+                  <button id="heroDetailsBtn" class="btn ghost">Ver catalogo</button>
+                </div>
               </div>
+
+              <aside class="hero-side">
+                <div class="metric"><span id="unlockedMetric" class="value">0</span><span class="label">Liberados</span></div>
+                <div class="metric"><span id="lockedMetric" class="value">0</span><span class="label">Bloqueados</span></div>
+                <div class="metric"><span id="journeyMetric" class="value">0%</span><span class="label">Jornada ativa</span></div>
+              </aside>
             </div>
-            <div class="hero-metrics">
-              <div class="metric">
-                <span id="unlockedMetric" class="value">0</span>
-                <span class="label">Liberados</span>
-              </div>
-              <div class="metric">
-                <span id="lockedMetric" class="value">0</span>
-                <span class="label">Bloqueados</span>
-              </div>
-              <div class="metric">
-                <span id="journeyMetric" class="value">0%</span>
-                <span class="label">Jornada ativa</span>
-              </div>
-            </div>
+            <div id="heroDots" class="hero-dots"></div>
           </article>
+
+          <section class="row-block" id="continueBlock">
+            <div class="row-head">
+              <h3 class="row-title">Continue assistindo</h3>
+            </div>
+            <div id="continueRail" class="cinema-rail"></div>
+          </section>
+
           <div id="rowsContainer"></div>
         </section>
 
-        <section id="playerSection" class="hidden">
+        <section id="playerSection" class="view-panel hidden">
           <div class="player-top">
             <button id="backHomeBtn" class="btn ghost">Voltar</button>
             <button id="openExternalBtn" class="btn ghost hidden">Abrir app externo</button>
           </div>
-          <article id="playerHero" class="player-hero">
+
+          <article id="playerHero" class="player-hero panel">
             <div class="player-overlay">
               <span id="playerTag" class="pill">Modulo em destaque</span>
               <h2 id="playerTitle">Titulo do produto</h2>
@@ -104,7 +120,7 @@
           </article>
 
           <div class="player-grid">
-            <section>
+            <section class="panel">
               <div class="section-head">
                 <h3>Episodios</h3>
               </div>
@@ -112,11 +128,11 @@
             </section>
 
             <aside class="right-panel">
-              <div class="right-card">
+              <div class="panel">
                 <h4>Conquistas</h4>
                 <div id="achievementsList" class="achievements-list"></div>
               </div>
-              <div class="right-card">
+              <div class="panel">
                 <h4>Recomendado para voce</h4>
                 <div id="recommendedList" class="mini-list"></div>
               </div>
@@ -124,13 +140,13 @@
           </div>
         </section>
 
-        <section id="profileSection" class="hidden">
+        <section id="profileSection" class="view-panel hidden">
           <div class="profile-grid">
-            <article class="right-card">
+            <article class="panel">
               <h4>Conta Premium</h4>
               <div id="subscriptionInfo" class="subscription-info"></div>
             </article>
-            <article class="right-card">
+            <article class="panel">
               <h4>Historico de cobrancas</h4>
               <div id="billingList" class="billing-list"></div>
             </article>
@@ -138,6 +154,14 @@
         </section>
       </main>
     </div>
+
+    <section id="onboardingModal" class="modal hidden">
+      <div class="modal-card panel">
+        <h3>Bem-vinda ao Chef em Casa</h3>
+        <p>Seu portal esta no estilo streaming. Explore o destaque, volte no continue assistindo e use a busca inteligente para achar rapido qualquer produto.</p>
+        <button id="closeOnboardingBtn" class="btn solid">Comecar agora</button>
+      </div>
+    </section>
 
     <nav class="mobile-nav">
       <button class="mobile-item active" data-nav="home">Home</button>
