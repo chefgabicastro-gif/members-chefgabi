@@ -60,8 +60,8 @@ body {
   border-radius: 0;
   border: 0;
   background: transparent;
-  mix-blend-mode: screen;
-  filter: drop-shadow(0 8px 22px rgba(255, 106, 48, 0.18));
+  opacity: 0.98;
+  filter: drop-shadow(0 6px 20px rgba(255, 106, 48, 0.16));
 }
 
 .brand-texts {
@@ -245,8 +245,8 @@ body {
   border-radius: 0;
   border: 0;
   background: transparent;
-  mix-blend-mode: screen;
-  filter: drop-shadow(0 12px 30px rgba(255, 106, 48, 0.2));
+  opacity: 1;
+  filter: drop-shadow(0 10px 26px rgba(255, 106, 48, 0.18));
   margin-bottom: 14px;
 }
 
