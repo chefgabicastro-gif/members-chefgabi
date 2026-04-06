@@ -65,12 +65,15 @@
         <section id="loginSection" class="panel login-shell">
           <div class="login-glow"></div>
           <img class="chef-silhouette chef-login" src="/chef-portrait.png" alt="Chef Gabriella Castro" />
-          <h1 id="loginTitle">Bem-vinda ao Chef em Casa</h1>
-          <p id="loginDescription">Entre para acessar seus produtos liberados e acompanhar sua trilha completa.</p>
+          <div class="login-brand">Area de Membros</div>
+          <h1 id="loginTitle">Seja bem-vinda(o)!</h1>
+          <p id="loginDescription">Acesse com o e-mail usado na compra para liberar seus cursos e order bumps.</p>
           <form id="loginForm" class="login-form">
-            <input id="emailInput" type="email" placeholder="seuemail@dominio.com" required />
-            <button type="submit" class="btn solid">Entrar</button>
+            <label class="login-label" for="emailInput">E-mail</label>
+            <input id="emailInput" type="email" placeholder="seuemail@dominio.com" inputmode="email" autocomplete="email" required />
+            <button type="submit" class="btn solid">Acessar conta</button>
           </form>
+          <p class="login-help">Nao recebeu acesso ainda? Fale com o suporte para validar seu cadastro.</p>
         </section>
 
         <section id="dashboardSection" class="view-panel hidden">

@@ -596,6 +596,8 @@ async function loadDashboard() {
 
 function setView() {
   if (token) {
+    document.body.classList.remove("logged-out");
+    document.body.classList.add("logged-in");
     loginSection.classList.add("hidden");
     dashboardSection.classList.remove("hidden");
     logoutBtn.classList.remove("hidden");
@@ -603,6 +605,8 @@ function setView() {
     showHome();
     maybeShowOnboarding();
   } else {
+    document.body.classList.add("logged-out");
+    document.body.classList.remove("logged-in");
     loginSection.classList.remove("hidden");
     dashboardSection.classList.add("hidden");
     playerSection.classList.add("hidden");
