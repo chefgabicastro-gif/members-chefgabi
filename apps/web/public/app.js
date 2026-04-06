@@ -62,6 +62,80 @@ let heroIndex = 0;
 let heroTimer = null;
 let searchTimer = null;
 
+const PRODUCT_SECTIONS = [
+  { id: "brownie", title: "Brownie Lucrativo", slugPrefix: "brownie-", cover: "/cards/brownie-lucrativo.png" },
+  { id: "cookie", title: "Cookie Lucrativo", slugPrefix: "cookies-", cover: "/cards/cookie-lucrativo.png" },
+  {
+    id: "palha",
+    title: "Palha Italiana Lucrativa",
+    slugPrefix: "palha-italiana-",
+    cover: "/cards/palha-italiana-lucrativa.png"
+  },
+  {
+    id: "doce-no-pote",
+    title: "Doce no Pote Lucrativo",
+    slugPrefix: "doces-no-pote-",
+    cover: "/cards/doce-no-pote-lucrativo.png"
+  },
+  {
+    id: "mini-bolo-vulcao",
+    title: "Mini Bolo Vulcao Lucrativo",
+    slugPrefix: "mini-bolo-vulcao-",
+    cover: "/cards/mini-bolo-vulcao-lucrativo.png"
+  }
+];
+
+const PLAN_ORDER = { basico: 1, pro: 2, upsell: 3 };
+
+function getSectionMeta(product) {
+  if (!product || !product.slug) return null;
+  return PRODUCT_SECTIONS.find((section) => product.slug.startsWith(section.slugPrefix)) || null;
+}
+
+function normalizeProduct(product) {
+  const section = getSectionMeta(product);
+  if (!section) return { ...product };
+  return {
+    ...product,
+    cover: section.cover,
+    sectionId: section.id
+  };
+}
+
+function normalizeProducts(products) {
+  return (products || []).map((product) => normalizeProduct(product));
+}
+
+function sortByPlan(items) {
+  return [...items].sort((a, b) => {
+    const aOrder = PLAN_ORDER[String(a.level || "").toLowerCase()] || 99;
+    const bOrder = PLAN_ORDER[String(b.level || "").toLowerCase()] || 99;
+    return aOrder - bOrder;
+  });
+}
+
+function buildProductRows(products) {
+  const rows = PRODUCT_SECTIONS.map((section) => {
+    const items = products.filter((product) => product.slug.startsWith(section.slugPrefix));
+    return {
+      id: section.id,
+      title: section.title,
+      items: sortByPlan(items)
+    };
+  }).filter((row) => row.items.length);
+
+  const remaining = products.filter((product) => !getSectionMeta(product));
+  if (remaining.length) {
+    rows.push({
+      id: "extras",
+      title: "Extras e Bônus",
+      items: remaining
+    });
+  }
+
+  return rows;
+}
+
 function applyBrand(config) {
   if (!config || typeof config !== "object") return;
   if (config.brandName) brandName.textContent = config.brandName;
@@ -137,13 +211,6 @@ async function login(email) {
   userEmailEl.textContent = data.user.email;
 }
 
-async function fetchRows() {
-  const response = await fetch(`${API_BASE}/api/v1/home/rows`, { headers: authHeaders() });
-  if (!response.ok) throw new Error("Sessao invalida");
-  const data = await response.json();
-  return data.rows || [];
-}
-
 async function fetchProducts() {
   const response = await fetch(`${API_BASE}/api/v1/products`, { headers: authHeaders() });
   if (!response.ok) throw new Error("Falha ao carregar catalogo");
@@ -211,11 +278,16 @@ function buttonFor(product) {
   return `<button class="btn wait" disabled>Disponivel no checkout</button>`;
 }
 
+function coverModeClass(product) {
+  return typeof product.cover === "string" && product.cover.startsWith("/cards/") ? " is-poster" : "";
+}
+
 function cinemaCardTemplate(product) {
   const price = product.price ? `R$ ${product.price}` : "Order Bump";
+  const coverClass = coverModeClass(product);
   return `
     <article class="cinema-card">
-      <div class="cinema-cover" style="background-image:url('${product.cover}')">
+      <div class="cinema-cover${coverClass}" style="background-image:url('${product.cover}')">
         <div class="card-top">
           ${statusBadge(product)}
           <span class="price">${price}</span>
@@ -232,9 +304,10 @@ function cinemaCardTemplate(product) {
 
 function storyCardTemplate(product) {
   const price = product.price ? `R$ ${product.price}` : "Order Bump";
+  const coverClass = coverModeClass(product);
   return `
     <article class="story-card">
-      <div class="story-cover" style="background-image:url('${product.cover}')">
+      <div class="story-cover${coverClass}" style="background-image:url('${product.cover}')">
         <div class="story-top">
           ${statusBadge(product)}
           <span class="price">${price}</span>
@@ -323,35 +396,25 @@ function renderHeroSlide(index) {
   });
 }
 
-function renderRows(rows, products) {
-  const unlockedCount = products.filter((item) => item.isUnlocked).length;
-  const lockedCount = products.length - unlockedCount;
-  const journeyPct = products.length ? Math.round((unlockedCount / products.length) * 100) : 0;
+function renderRows(products) {
+  const normalizedProducts = normalizeProducts(products);
+
+  const unlockedCount = normalizedProducts.filter((item) => item.isUnlocked).length;
+  const lockedCount = normalizedProducts.length - unlockedCount;
+  const journeyPct = normalizedProducts.length ? Math.round((unlockedCount / normalizedProducts.length) * 100) : 0;
   unlockedMetric.textContent = String(unlockedCount);
   lockedMetric.textContent = String(lockedCount);
   journeyMetric.textContent = `${journeyPct}%`;
 
-  setHeroSlides(products);
+  setHeroSlides(normalizedProducts);
 
-  const continueItems = products.filter((item) => item.isUnlocked).slice(0, 10);
+  const continueItems = normalizedProducts.filter((item) => item.isUnlocked).slice(0, 10);
   continueRail.innerHTML = continueItems.length
     ? continueItems.map((item) => cinemaCardTemplate(item)).join("")
     : "<p class='muted'>Nenhum conteudo liberado ainda.</p>";
 
-  const highContent = {
-    id: "high",
-    title: "Conteudo em alta",
-    items: products.slice(0, 12)
-  };
-
-  const unlockedRow = {
-    id: "free",
-    title: "Liberados para voce",
-    items: products.filter((item) => item.isUnlocked)
-  };
-
-  const composedRows = [unlockedRow, ...rows, highContent].filter((row) => row.items && row.items.length);
-  rowsContainer.innerHTML = composedRows.map((row) => rowTemplate(row)).join("");
+  const perProductRows = buildProductRows(normalizedProducts);
+  rowsContainer.innerHTML = perProductRows.map((row) => rowTemplate(row)).join("");
 
   bindActionButtons(document);
 }
@@ -395,16 +458,17 @@ async function goToCheckout(productSlug) {
 }
 
 function renderPlayer(content) {
-  playerTitle.textContent = content.product.title;
-  playerDesc.textContent = content.product.description;
-  playerTag.textContent = content.product.tagline || "Conteudo premium";
-  playerHero.style.backgroundImage = `linear-gradient(180deg, rgba(8, 11, 18, 0.15), rgba(7, 10, 18, 0.86)), url('${content.product.cover}')`;
+  const currentProduct = normalizeProduct(content.product);
+  playerTitle.textContent = currentProduct.title;
+  playerDesc.textContent = currentProduct.description;
+  playerTag.textContent = currentProduct.tagline || "Conteudo premium";
+  playerHero.style.backgroundImage = `linear-gradient(180deg, rgba(8, 11, 18, 0.15), rgba(7, 10, 18, 0.86)), url('${currentProduct.cover}')`;
   playerHero.style.backgroundSize = "cover";
   playerHero.style.backgroundPosition = "center";
 
   lessonProgressMap = Object.fromEntries((content.lessonProgress || []).map((item) => [item.lessonId, item]));
   const episodes = content.modules.flatMap((module) =>
-    module.lessons.map((lesson) => ({ ...lesson, moduleTitle: module.title }))
+    module.lessons.map((lesson) => ({ ...lesson, thumb: currentProduct.cover, moduleTitle: module.title }))
   );
 
   episodesList.innerHTML = episodes
@@ -443,7 +507,8 @@ function renderPlayer(content) {
     )
     .join("");
 
-  recommendedList.innerHTML = (content.recommended || [])
+  const normalizedRecommended = normalizeProducts(content.recommended || []);
+  recommendedList.innerHTML = normalizedRecommended
     .map(
       (item) => `
       <button class="mini-card" data-slug="${item.slug}">
@@ -516,15 +581,14 @@ function maybeShowOnboarding() {
 
 async function loadDashboard() {
   showSkeleton();
-  const [rows, products, profile, billingItems] = await Promise.all([
-    fetchRows(),
+  const [products, profile, billingItems] = await Promise.all([
     fetchProducts(),
     fetchProfile(),
     fetchBilling()
   ]);
 
-  productCache = products;
-  renderRows(rows, products);
+  productCache = normalizeProducts(products);
+  renderRows(productCache);
   renderProfile(profile, billingItems);
 }
 
@@ -627,7 +691,7 @@ searchInput.addEventListener("input", () => {
     }
 
     showSkeleton();
-    const results = await searchProducts(q);
+    const results = normalizeProducts(await searchProducts(q));
     const searchRow = {
       id: "search",
       title: `Resultados para \"${q}\"`,

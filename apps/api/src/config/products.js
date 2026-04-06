@@ -8,7 +8,7 @@
     level: "Basico",
     runtime: "Trilha principal",
     category: "Cookies",
-    cover: "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=1200&q=80",
+    cover: "/cards/cookie-lucrativo.png",
     price: 97,
     hasCheckout: true
   },
@@ -21,7 +21,7 @@
     level: "Pro",
     runtime: "Trilha avancada",
     category: "Cookies",
-    cover: "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=1200&q=80",
+    cover: "/cards/cookie-lucrativo.png",
     price: 197,
     hasCheckout: true
   },
@@ -34,7 +34,7 @@
     level: "Upsell",
     runtime: "Bonus premium",
     category: "Cookies",
-    cover: "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=1200&q=80",
+    cover: "/cards/cookie-lucrativo.png",
     price: 147,
     hasCheckout: true
   },
@@ -47,7 +47,7 @@
     level: "Basico",
     runtime: "Trilha principal",
     category: "Brownie",
-    cover: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=1200&q=80",
+    cover: "/cards/brownie-lucrativo.png",
     price: 97,
     hasCheckout: true
   },
@@ -60,7 +60,7 @@
     level: "Pro",
     runtime: "Trilha avancada",
     category: "Brownie",
-    cover: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=1200&q=80",
+    cover: "/cards/brownie-lucrativo.png",
     price: 197,
     hasCheckout: true
   },
@@ -73,7 +73,7 @@
     level: "Upsell",
     runtime: "Bonus premium",
     category: "Brownie",
-    cover: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=1200&q=80",
+    cover: "/cards/brownie-lucrativo.png",
     price: 147,
     hasCheckout: true
   },
@@ -86,7 +86,7 @@
     level: "Basico",
     runtime: "Trilha principal",
     category: "Palha Italiana",
-    cover: "https://images.unsplash.com/photo-1511381939415-e44015466834?auto=format&fit=crop&w=1200&q=80",
+    cover: "/cards/palha-italiana-lucrativa.png",
     price: 97,
     hasCheckout: true
   },
@@ -99,7 +99,7 @@
     level: "Pro",
     runtime: "Trilha avancada",
     category: "Palha Italiana",
-    cover: "https://images.unsplash.com/photo-1511381939415-e44015466834?auto=format&fit=crop&w=1200&q=80",
+    cover: "/cards/palha-italiana-lucrativa.png",
     price: 197,
     hasCheckout: true
   },
@@ -112,7 +112,7 @@
     level: "Upsell",
     runtime: "Bonus premium",
     category: "Palha Italiana",
-    cover: "https://images.unsplash.com/photo-1511381939415-e44015466834?auto=format&fit=crop&w=1200&q=80",
+    cover: "/cards/palha-italiana-lucrativa.png",
     price: 147,
     hasCheckout: true
   },
@@ -125,7 +125,7 @@
     level: "Basico",
     runtime: "Trilha principal",
     category: "Doces no Pote",
-    cover: "https://images.unsplash.com/photo-1453831362806-3d5577f014a4?auto=format&fit=crop&w=1200&q=80",
+    cover: "/cards/doce-no-pote-lucrativo.png",
     price: 97,
     hasCheckout: true
   },
@@ -138,7 +138,7 @@
     level: "Pro",
     runtime: "Trilha avancada",
     category: "Doces no Pote",
-    cover: "https://images.unsplash.com/photo-1453831362806-3d5577f014a4?auto=format&fit=crop&w=1200&q=80",
+    cover: "/cards/doce-no-pote-lucrativo.png",
     price: 197,
     hasCheckout: true
   },
@@ -151,7 +151,7 @@
     level: "Upsell",
     runtime: "Bonus premium",
     category: "Doces no Pote",
-    cover: "https://images.unsplash.com/photo-1453831362806-3d5577f014a4?auto=format&fit=crop&w=1200&q=80",
+    cover: "/cards/doce-no-pote-lucrativo.png",
     price: 147,
     hasCheckout: true
   },
@@ -164,7 +164,7 @@
     level: "Basico",
     runtime: "Trilha principal",
     category: "Mini Bolo Vulcao",
-    cover: "https://images.unsplash.com/photo-1464306076886-da185f6a9d05?auto=format&fit=crop&w=1200&q=80",
+    cover: "/cards/mini-bolo-vulcao-lucrativo.png",
     price: 97,
     hasCheckout: true
   },
@@ -177,7 +177,7 @@
     level: "Pro",
     runtime: "Trilha avancada",
     category: "Mini Bolo Vulcao",
-    cover: "https://images.unsplash.com/photo-1464306076886-da185f6a9d05?auto=format&fit=crop&w=1200&q=80",
+    cover: "/cards/mini-bolo-vulcao-lucrativo.png",
     price: 197,
     hasCheckout: true
   },
@@ -190,7 +190,7 @@
     level: "Upsell",
     runtime: "Bonus premium",
     category: "Mini Bolo Vulcao",
-    cover: "https://images.unsplash.com/photo-1464306076886-da185f6a9d05?auto=format&fit=crop&w=1200&q=80",
+    cover: "/cards/mini-bolo-vulcao-lucrativo.png",
     price: 147,
     hasCheckout: true
   },
@@ -247,3 +247,4 @@
     hasCheckout: false
   }
 ];
+

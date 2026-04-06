@@ -465,6 +465,14 @@ body {
   position: relative;
 }
 
+.cinema-cover.is-poster,
+.story-cover.is-poster {
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-color: #0b111d;
+}
+
 .cinema-cover::after,
 .story-cover::after {
   content: "";
