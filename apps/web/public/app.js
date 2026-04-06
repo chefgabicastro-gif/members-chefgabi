@@ -63,25 +63,29 @@ let heroTimer = null;
 let searchTimer = null;
 
 const PRODUCT_SECTIONS = [
-  { id: "brownie", title: "Brownie Lucrativo", slugPrefix: "brownie-", cover: "/cards/brownie-lucrativo.png" },
-  { id: "cookie", title: "Cookie Lucrativo", slugPrefix: "cookies-", cover: "/cards/cookie-lucrativo.png" },
+  { id: "cookies", title: "Seção Cookies", slugPrefix: "cookies-", cover: "/cards/cookie-lucrativo.jpg" },
+  { id: "brownie", title: "Seção Brownie", slugPrefix: "brownie-", cover: "/cards/brownie-lucrativo.jpg" },
   {
     id: "palha",
-    title: "Palha Italiana Lucrativa",
+    title: "Seção Palha",
     slugPrefix: "palha-italiana-",
-    cover: "/cards/palha-italiana-lucrativa.png"
+    cover: "/cards/palha-italiana-lucrativa.jpg"
   },
   {
     id: "doce-no-pote",
-    title: "Doce no Pote Lucrativo",
+    title: "Seção Doce no Pote",
     slugPrefix: "doces-no-pote-",
-    cover: "/cards/doce-no-pote-lucrativo.png"
+    cover: "/cards/doce-no-pote-lucrativo.jpg"
   },
   {
     id: "mini-bolo-vulcao",
-    title: "Mini Bolo Vulcao Lucrativo",
+    title: "Seção Mini Bolo Vulcão",
     slugPrefix: "mini-bolo-vulcao-",
-    cover: "/cards/mini-bolo-vulcao-lucrativo.png"
+    cover: "/cards/mini-bolo-vulcao-lucrativo.jpg"
+  },
+  {
+    id: "orderbumps",
+    title: "Seção Orderbumps"
   }
 ];
 
@@ -89,7 +93,11 @@ const PLAN_ORDER = { basico: 1, pro: 2, upsell: 3 };
 
 function getSectionMeta(product) {
   if (!product || !product.slug) return null;
-  return PRODUCT_SECTIONS.find((section) => product.slug.startsWith(section.slugPrefix)) || null;
+  const productCategory = String(product.category || "").toLowerCase();
+  if (productCategory.includes("order bump")) {
+    return PRODUCT_SECTIONS.find((section) => section.id === "orderbumps") || null;
+  }
+  return PRODUCT_SECTIONS.find((section) => section.slugPrefix && product.slug.startsWith(section.slugPrefix)) || null;
 }
 
 function normalizeProduct(product) {
@@ -116,22 +124,16 @@ function sortByPlan(items) {
 
 function buildProductRows(products) {
   const rows = PRODUCT_SECTIONS.map((section) => {
-    const items = products.filter((product) => product.slug.startsWith(section.slugPrefix));
+    const items = products.filter((product) => {
+      const meta = getSectionMeta(product);
+      return meta && meta.id === section.id;
+    });
     return {
       id: section.id,
       title: section.title,
       items: sortByPlan(items)
     };
   }).filter((row) => row.items.length);
-
-  const remaining = products.filter((product) => !getSectionMeta(product));
-  if (remaining.length) {
-    rows.push({
-      id: "extras",
-      title: "Extras e Bônus",
-      items: remaining
-    });
-  }
 
   return rows;
 }

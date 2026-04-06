@@ -8,7 +8,7 @@
     level: "Basico",
     runtime: "Trilha principal",
     category: "Cookies",
-    cover: "/cards/cookie-lucrativo.png",
+    cover: "/cards/cookie-lucrativo.jpg",
     price: 97,
     hasCheckout: true
   },
@@ -21,7 +21,7 @@
     level: "Pro",
     runtime: "Trilha avancada",
     category: "Cookies",
-    cover: "/cards/cookie-lucrativo.png",
+    cover: "/cards/cookie-lucrativo.jpg",
     price: 197,
     hasCheckout: true
   },
@@ -34,7 +34,7 @@
     level: "Upsell",
     runtime: "Bonus premium",
     category: "Cookies",
-    cover: "/cards/cookie-lucrativo.png",
+    cover: "/cards/cookie-lucrativo.jpg",
     price: 147,
     hasCheckout: true
   },
@@ -47,7 +47,7 @@
     level: "Basico",
     runtime: "Trilha principal",
     category: "Brownie",
-    cover: "/cards/brownie-lucrativo.png",
+    cover: "/cards/brownie-lucrativo.jpg",
     price: 97,
     hasCheckout: true
   },
@@ -60,7 +60,7 @@
     level: "Pro",
     runtime: "Trilha avancada",
     category: "Brownie",
-    cover: "/cards/brownie-lucrativo.png",
+    cover: "/cards/brownie-lucrativo.jpg",
     price: 197,
     hasCheckout: true
   },
@@ -73,7 +73,7 @@
     level: "Upsell",
     runtime: "Bonus premium",
     category: "Brownie",
-    cover: "/cards/brownie-lucrativo.png",
+    cover: "/cards/brownie-lucrativo.jpg",
     price: 147,
     hasCheckout: true
   },
@@ -86,7 +86,7 @@
     level: "Basico",
     runtime: "Trilha principal",
     category: "Palha Italiana",
-    cover: "/cards/palha-italiana-lucrativa.png",
+    cover: "/cards/palha-italiana-lucrativa.jpg",
     price: 97,
     hasCheckout: true
   },
@@ -99,7 +99,7 @@
     level: "Pro",
     runtime: "Trilha avancada",
     category: "Palha Italiana",
-    cover: "/cards/palha-italiana-lucrativa.png",
+    cover: "/cards/palha-italiana-lucrativa.jpg",
     price: 197,
     hasCheckout: true
   },
@@ -112,7 +112,7 @@
     level: "Upsell",
     runtime: "Bonus premium",
     category: "Palha Italiana",
-    cover: "/cards/palha-italiana-lucrativa.png",
+    cover: "/cards/palha-italiana-lucrativa.jpg",
     price: 147,
     hasCheckout: true
   },
@@ -125,7 +125,7 @@
     level: "Basico",
     runtime: "Trilha principal",
     category: "Doces no Pote",
-    cover: "/cards/doce-no-pote-lucrativo.png",
+    cover: "/cards/doce-no-pote-lucrativo.jpg",
     price: 97,
     hasCheckout: true
   },
@@ -138,7 +138,7 @@
     level: "Pro",
     runtime: "Trilha avancada",
     category: "Doces no Pote",
-    cover: "/cards/doce-no-pote-lucrativo.png",
+    cover: "/cards/doce-no-pote-lucrativo.jpg",
     price: 197,
     hasCheckout: true
   },
@@ -151,7 +151,7 @@
     level: "Upsell",
     runtime: "Bonus premium",
     category: "Doces no Pote",
-    cover: "/cards/doce-no-pote-lucrativo.png",
+    cover: "/cards/doce-no-pote-lucrativo.jpg",
     price: 147,
     hasCheckout: true
   },
@@ -164,7 +164,7 @@
     level: "Basico",
     runtime: "Trilha principal",
     category: "Mini Bolo Vulcao",
-    cover: "/cards/mini-bolo-vulcao-lucrativo.png",
+    cover: "/cards/mini-bolo-vulcao-lucrativo.jpg",
     price: 97,
     hasCheckout: true
   },
@@ -177,7 +177,7 @@
     level: "Pro",
     runtime: "Trilha avancada",
     category: "Mini Bolo Vulcao",
-    cover: "/cards/mini-bolo-vulcao-lucrativo.png",
+    cover: "/cards/mini-bolo-vulcao-lucrativo.jpg",
     price: 197,
     hasCheckout: true
   },
@@ -190,7 +190,7 @@
     level: "Upsell",
     runtime: "Bonus premium",
     category: "Mini Bolo Vulcao",
-    cover: "/cards/mini-bolo-vulcao-lucrativo.png",
+    cover: "/cards/mini-bolo-vulcao-lucrativo.jpg",
     price: 147,
     hasCheckout: true
   },
@@ -247,4 +247,5 @@
     hasCheckout: false
   }
 ];
+
 
