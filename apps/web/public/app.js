@@ -274,8 +274,7 @@ function buttonFor(product) {
     return `<button class="btn enter cta-enter" data-slug="${product.slug}">Entrar agora</button>`;
   }
   if (hasCheckout) {
-    const price = product.price ? `R$ ${product.price}` : "Order Bump";
-    return `<button class="btn unlock cta-unlock" data-slug="${product.slug}">Desbloquear ${price}</button>`;
+    return `<button class="btn unlock cta-unlock" data-slug="${product.slug}">Desbloquear</button>`;
   }
   return `<button class="btn wait" disabled>Disponivel no checkout</button>`;
 }
