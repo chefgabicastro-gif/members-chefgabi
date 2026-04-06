@@ -1,6 +1,6 @@
-let API_BASE =
+ï»¿let API_BASE =
   localStorage.getItem("apiBase") ||
-  (window.location.hostname === "localhost" ? "http://localhost:4000" : "");
+  (window.location.hostname === "localhost" ? "http://localhost:4000" : "https://api.chefgabriellacastro.site");
 
 const loginSection = document.getElementById("loginSection");
 const dashboardSection = document.getElementById("dashboardSection");
@@ -119,11 +119,16 @@ function showProfile() {
 }
 
 async function login(email) {
-  const response = await fetch(`${API_BASE}/api/v1/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email })
-  });
+  let response;
+  try {
+    response = await fetch(`${API_BASE}/api/v1/auth/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email })
+    });
+  } catch (_error) {
+    throw new Error("Nao foi possivel conectar na API. Verifique dominio/CORS no Render.");
+  }
   if (!response.ok) throw new Error("Falha no login");
   const data = await response.json();
   token = data.token;
@@ -368,7 +373,7 @@ function renderProfile(profile, billingItems) {
           (item) => `
       <div class="billing-item">
         <strong>${item.description}</strong>
-        <span>${formatDate(item.date)} • ${item.status}</span>
+        <span>${formatDate(item.date)} â€¢ ${item.status}</span>
         <small>R$ ${Number(item.amount || 0)}</small>
       </div>
     `
@@ -410,7 +415,7 @@ function renderPlayer(content) {
         <div>
           <h4>${lesson.title}</h4>
           <p>${lesson.moduleTitle}</p>
-          <span>${lesson.durationMinutes} min • ${lessonProgressMap[lesson.id]?.watchedPercent || 0}%</span>
+          <span>${lesson.durationMinutes} min â€¢ ${lessonProgressMap[lesson.id]?.watchedPercent || 0}%</span>
         </div>
       </article>
     `
@@ -659,7 +664,7 @@ window.addEventListener("load", async () => {
     const configResponse = await fetch("/config.json");
     if (configResponse.ok) {
       const config = await configResponse.json();
-      if (config.apiBase && !localStorage.getItem("apiBase") && !API_BASE) API_BASE = config.apiBase;
+      if (config.apiBase && !localStorage.getItem("apiBase")) API_BASE = config.apiBase;
     }
   } catch (_error) {}
 
@@ -678,3 +683,5 @@ window.addEventListener("load", async () => {
     }
   }
 });
+
+

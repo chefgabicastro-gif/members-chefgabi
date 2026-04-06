@@ -217,6 +217,24 @@ body {
   overflow: hidden;
 }
 
+.chef-silhouette {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+  mix-blend-mode: multiply;
+  filter: saturate(1.06) contrast(1.05);
+  opacity: 0.4;
+  mask-image: linear-gradient(to left, rgba(0, 0, 0, 0.94), rgba(0, 0, 0, 0.55), transparent 92%);
+  -webkit-mask-image: linear-gradient(to left, rgba(0, 0, 0, 0.94), rgba(0, 0, 0, 0.55), transparent 92%);
+}
+
+.chef-login {
+  right: -24px;
+  bottom: -2px;
+  height: 108%;
+}
+
 .login-glow {
   position: absolute;
   right: -65px;
@@ -228,17 +246,23 @@ body {
 }
 
 .login-shell h1 {
+  position: relative;
+  z-index: 1;
   margin: 0;
   font-size: clamp(2rem, 4vw, 3.2rem);
   font-family: "Outfit", sans-serif;
 }
 
 .login-shell p {
+  position: relative;
+  z-index: 1;
   margin: 8px 0 0;
   color: var(--muted);
 }
 
 .login-form {
+  position: relative;
+  z-index: 1;
   margin-top: 16px;
   display: grid;
   grid-template-columns: 1fr auto;
@@ -271,6 +295,13 @@ body {
   position: relative;
   overflow: hidden;
   min-height: 370px;
+}
+
+.chef-hero {
+  right: -20px;
+  bottom: -14px;
+  height: 112%;
+  opacity: 0.32;
 }
 
 .hero-media {
@@ -880,6 +911,11 @@ body {
 
   .story-rail {
     grid-auto-columns: minmax(180px, 215px);
+  }
+
+  .chef-login,
+  .chef-hero {
+    display: none;
   }
 
   .episode {

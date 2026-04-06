@@ -32,9 +32,27 @@ const PORT = process.env.PORT || 4000;
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || "dev_webhook_secret";
 const GG_WEBHOOK_SECRET = process.env.GG_WEBHOOK_SECRET || "";
 const ADMIN_KEY = process.env.ADMIN_KEY || "dev_admin_key";
-const allowedOrigin = process.env.WEB_ORIGIN || "*";
+const envOrigins = (process.env.WEB_ORIGIN || "")
+  .split(",")
+  .map((item) => item.trim())
+  .filter(Boolean);
+const allowAllOrigins = envOrigins.includes("*");
+const allowedOrigins = new Set([
+  "https://members.chefgabriellacastro.site",
+  "https://chefgabi-members-web.onrender.com",
+  ...envOrigins
+]);
 
-app.use(cors({ origin: allowedOrigin === "*" ? true : allowedOrigin }));
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin) return callback(null, true);
+      if (allowAllOrigins) return callback(null, true);
+      if (allowedOrigins.has(origin)) return callback(null, true);
+      return callback(new Error("CORS origin not allowed"));
+    }
+  })
+);
 app.use(
   express.json({
     verify: (req, _res, buf) => {
