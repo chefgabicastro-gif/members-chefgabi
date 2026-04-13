@@ -26,6 +26,7 @@ import { normalizeGgCheckoutWebhook } from "./integrations/gg-checkout.js";
 import { getCheckoutUrl } from "./config/checkout.js";
 import { getAccessLink } from "./config/access-links.js";
 import { buildProductContent } from "./config/content.js";
+import { getProductWorkspace } from "./config/product-workspaces.js";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -93,7 +94,36 @@ function parseWebhookPayload(provider, body) {
   }
 
   const { eventId, status, email, productSlug } = body || {};
-  return { eventId, status, email, productSlug };
+  return { eventId, status: String(status || "").toLowerCase(), email, productSlug };
+}
+
+function entitlementChain(productSlug) {
+  if (productSlug === "brownie-upsell") return ["brownie-basico", "brownie-pro", "brownie-upsell"];
+  if (productSlug === "brownie-pro") return ["brownie-basico", "brownie-pro"];
+  return [productSlug];
+}
+
+function grantProductChain({ userId, productSlug, source }) {
+  const chain = entitlementChain(productSlug);
+  chain.forEach((slug, index) => {
+    grantEntitlement({
+      userId,
+      productSlug: slug,
+      source: index === 0 ? source : `${source}:derived`,
+      recordBilling: slug === productSlug
+    });
+  });
+}
+
+function revokeProductChain({ userId, productSlug, source }) {
+  const chain = entitlementChain(productSlug);
+  chain.forEach((slug, index) => {
+    revokeEntitlement({
+      userId,
+      productSlug: slug,
+      source: index === 0 ? source : `${source}:derived`
+    });
+  });
 }
 
 app.get("/health", (_req, res) => {
@@ -161,6 +191,29 @@ app.get("/api/v1/products/:productSlug/access", requireAuth, (req, res) => {
   return res.json({ accessUrl, productSlug });
 });
 
+app.get("/api/v1/products/:productSlug/workspace", requireAuth, (req, res) => {
+  const productSlug = req.params.productSlug;
+  const items = listProductsForUser(req.user.id);
+  const product = items.find((item) => item.slug === productSlug);
+  if (!product) {
+    return res.status(404).json({ error: "Product not found" });
+  }
+
+  if (!product.isUnlocked) {
+    return res.status(403).json({ error: "Product is locked for this user" });
+  }
+
+  const workspace = getProductWorkspace(productSlug);
+  return res.json({
+    product: {
+      slug: product.slug,
+      title: product.title,
+      plan: product.tagline || product.level || null
+    },
+    workspace
+  });
+});
+
 app.get("/api/v1/products/:productSlug/content", requireAuth, (req, res) => {
   const productSlug = req.params.productSlug;
   const items = listProductsForUser(req.user.id);
@@ -180,7 +233,8 @@ app.get("/api/v1/products/:productSlug/content", requireAuth, (req, res) => {
 
   const externalAccessUrl = getAccessLink(productSlug);
   const lessonProgress = getProgressByProduct(req.user.id, productSlug);
-  return res.json({ ...content, externalAccessUrl, lessonProgress });
+  const workspace = getProductWorkspace(productSlug);
+  return res.json({ ...content, externalAccessUrl, lessonProgress, workspace });
 });
 
 app.get("/api/v1/profile/me", requireAuth, (req, res) => {
@@ -258,7 +312,7 @@ app.post("/api/v1/admin/entitlements/grant", (req, res) => {
     return res.status(404).json({ error: "Product not found" });
   }
 
-  grantEntitlement({ userId: user.id, productSlug, source: "admin_manual" });
+  grantProductChain({ userId: user.id, productSlug, source: "admin_manual" });
   return res.json({ success: true, userId: user.id, productSlug });
 });
 
@@ -278,7 +332,7 @@ app.post("/api/v1/admin/entitlements/revoke", (req, res) => {
     return res.status(404).json({ error: "User not found" });
   }
 
-  revokeEntitlement({ userId: user.id, productSlug, source: "admin_manual_revoke" });
+  revokeProductChain({ userId: user.id, productSlug, source: "admin_manual_revoke" });
   return res.json({ success: true, userId: user.id, productSlug });
 });
 
@@ -344,12 +398,12 @@ app.post("/api/v1/webhooks/:provider", (req, res) => {
   saveWebhookEvent({ provider, eventId, payload: req.body });
   const user = createOrGetUserByEmail(String(email).toLowerCase());
 
-  if (status === "approved") {
-    grantEntitlement({ userId: user.id, productSlug, source: `${provider}:${eventId}` });
+  if (["approved", "paid"].includes(String(status).toLowerCase())) {
+    grantProductChain({ userId: user.id, productSlug, source: `${provider}:${eventId}` });
   }
 
-  if (status === "refunded" || status === "chargeback" || status === "canceled") {
-    revokeEntitlement({ userId: user.id, productSlug, source: `${provider}:${eventId}` });
+  if (["refunded", "chargeback", "canceled", "cancelled"].includes(String(status).toLowerCase())) {
+    revokeProductChain({ userId: user.id, productSlug, source: `${provider}:${eventId}` });
   }
 
   return res.status(200).json({ success: true });

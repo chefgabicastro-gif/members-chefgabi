@@ -122,7 +122,7 @@ export function getHomeRows(userId) {
   ];
 }
 
-export function grantEntitlement({ userId, productSlug, source }) {
+export function grantEntitlement({ userId, productSlug, source, recordBilling = true }) {
   const db = readDb();
   const existing = db.entitlements.find(
     (e) => e.userId === userId && e.productSlug === productSlug
@@ -144,16 +144,18 @@ export function grantEntitlement({ userId, productSlug, source }) {
     });
   }
 
-  db.billingHistory.push({
-    id: crypto.randomUUID(),
-    userId,
-    date: new Date().toISOString(),
-    status: "paid",
-    amount: products.find((p) => p.slug === productSlug)?.price || 0,
-    method: "card",
-    description: `Compra aprovada: ${productSlug}`,
-    source
-  });
+  if (recordBilling) {
+    db.billingHistory.push({
+      id: crypto.randomUUID(),
+      userId,
+      date: new Date().toISOString(),
+      status: "paid",
+      amount: products.find((p) => p.slug === productSlug)?.price || 0,
+      method: "card",
+      description: `Compra aprovada: ${productSlug}`,
+      source
+    });
+  }
 
   writeDb(db);
 }

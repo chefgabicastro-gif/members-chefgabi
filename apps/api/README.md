@@ -9,6 +9,7 @@ API Node/Express do MVP.
 - `GET /api/v1/products`
 - `GET /api/v1/home/rows`
 - `GET /api/v1/entitlements/me`
+- `GET /api/v1/products/:productSlug/workspace`
 - `GET /api/v1/checkout/url/:productSlug`
 - `POST /api/v1/webhooks/:provider`
 - `POST /api/v1/admin/entitlements/grant`
@@ -41,6 +42,40 @@ Configuracoes:
 - `GG_WEBHOOK_SECRET`: segredo para validar assinatura
 - `GG_PRODUCT_MAP`: mapa JSON de `productId -> productSlug`
 - `GG_CHECKOUT_LINKS`: mapa JSON de `productSlug -> checkoutUrl`
+- `PRODUCT_WORKSPACES`: mapa JSON de `productSlug -> { areaDeMembros, materialExtra, networking }`
+
+Regras de heranca de acesso (Brownie):
+
+- Compra `brownie-basico`: libera `brownie-basico`
+- Compra `brownie-pro`: libera `brownie-pro` + `brownie-basico`
+- Compra `brownie-upsell`: libera `brownie-upsell` + `brownie-pro` + `brownie-basico`
+
+Status de webhook:
+
+- Liberam acesso: `approved`, `paid`
+- Revogam acesso: `refunded`, `chargeback`, `canceled` (`cancelled` tambem aceito)
+
+Exemplo de `PRODUCT_WORKSPACES` para Brownie:
+
+```json
+{
+  "brownie-basico": {
+    "areaDeMembros": "https://seu-link-basico",
+    "materialExtra": "https://seu-drive-basico",
+    "networking": "https://chat.whatsapp.com/seu-link-basico"
+  },
+  "brownie-pro": {
+    "areaDeMembros": "https://seu-link-pro",
+    "materialExtra": "https://seu-drive-pro",
+    "networking": "https://chat.whatsapp.com/seu-link-pro"
+  },
+  "brownie-upsell": {
+    "areaDeMembros": "https://seu-link-upsell",
+    "materialExtra": "https://seu-drive-upsell",
+    "networking": "https://chat.whatsapp.com/seu-link-upsell"
+  }
+}
+```
 
 Exemplo de teste:
 
