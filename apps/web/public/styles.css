@@ -1058,6 +1058,162 @@ body {
   display: none !important;
 }
 
+/* Neon premium theme */
+:root {
+  --neon-cyan: #41f0ff;
+  --neon-violet: #8d6bff;
+  --neon-blue: #5b8dff;
+  --neon-orange: #ff8d3a;
+}
+
+.scene-bg {
+  background:
+    radial-gradient(48% 40% at 12% -8%, rgba(65, 240, 255, 0.2), transparent 62%),
+    radial-gradient(44% 34% at 92% 6%, rgba(141, 107, 255, 0.2), transparent 62%),
+    radial-gradient(32% 26% at 75% 78%, rgba(255, 141, 58, 0.16), transparent 64%),
+    linear-gradient(168deg, #060913 0%, #0a1020 44%, #0d1630 100%);
+}
+
+.sidebar {
+  border-right-color: rgba(91, 141, 255, 0.2);
+  background: linear-gradient(170deg, rgba(8, 13, 24, 0.94), rgba(7, 11, 20, 0.88));
+  box-shadow: inset -1px 0 0 rgba(65, 240, 255, 0.12);
+}
+
+.brand-logo {
+  filter:
+    drop-shadow(0 0 10px rgba(255, 141, 58, 0.32))
+    drop-shadow(0 0 22px rgba(65, 240, 255, 0.16));
+}
+
+.menu-item {
+  border-color: rgba(91, 141, 255, 0.08);
+  background: rgba(255, 255, 255, 0.01);
+}
+
+.menu-item:hover,
+.menu-item.active {
+  border-color: rgba(65, 240, 255, 0.46);
+  background: linear-gradient(110deg, rgba(65, 240, 255, 0.12), rgba(141, 107, 255, 0.12));
+  box-shadow: 0 0 0 1px rgba(65, 240, 255, 0.16), 0 0 18px rgba(65, 240, 255, 0.14);
+}
+
+.side-card,
+.panel {
+  border-color: rgba(91, 141, 255, 0.26);
+  background: linear-gradient(155deg, rgba(14, 22, 38, 0.95), rgba(10, 17, 31, 0.94));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 8px 32px rgba(3, 8, 20, 0.44);
+}
+
+.top-nav-item,
+.search-wrap input,
+.btn.ghost,
+.mobile-item {
+  border-color: rgba(91, 141, 255, 0.34);
+}
+
+.top-nav-item.active,
+.mobile-item.active {
+  border-color: rgba(65, 240, 255, 0.52);
+  background: linear-gradient(120deg, rgba(65, 240, 255, 0.14), rgba(141, 107, 255, 0.16));
+  box-shadow: 0 0 18px rgba(65, 240, 255, 0.18);
+}
+
+.btn.solid,
+.unlock {
+  background: linear-gradient(118deg, #ff8d3a 0%, #ffc66f 42%, #41f0ff 100%);
+  box-shadow: 0 8px 24px rgba(65, 240, 255, 0.26), 0 6px 20px rgba(255, 141, 58, 0.3);
+}
+
+.btn.solid:hover,
+.unlock:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+
+.login-shell {
+  border-color: rgba(65, 240, 255, 0.28);
+  box-shadow: 0 12px 44px rgba(0, 0, 0, 0.4), 0 0 28px rgba(65, 240, 255, 0.14);
+}
+
+.login-brand,
+.pill {
+  border-color: rgba(65, 240, 255, 0.42);
+  color: #dffcff;
+  background: rgba(65, 240, 255, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(65, 240, 255, 0.08), 0 0 16px rgba(65, 240, 255, 0.14);
+}
+
+.login-form input {
+  border-color: rgba(91, 141, 255, 0.34);
+  background: rgba(8, 14, 26, 0.94);
+}
+
+.login-form input:focus,
+.search-wrap input:focus {
+  border-color: rgba(65, 240, 255, 0.85);
+  box-shadow: 0 0 0 3px rgba(65, 240, 255, 0.18), 0 0 22px rgba(65, 240, 255, 0.2);
+}
+
+.row-title,
+.section-head h3,
+.right-panel h4,
+.profile-grid h4 {
+  text-shadow: 0 0 14px rgba(65, 240, 255, 0.22);
+}
+
+.cinema-card,
+.story-card,
+.episode,
+.workspace-link,
+.mini-card,
+.player-access-card,
+.sub-row,
+.billing-item,
+.access-card {
+  border-color: rgba(91, 141, 255, 0.34);
+  background: linear-gradient(165deg, rgba(13, 21, 37, 0.96), rgba(10, 17, 31, 0.96));
+}
+
+.cinema-card:hover,
+.story-card:hover,
+.episode:hover,
+.workspace-link:hover,
+.mini-card:hover,
+.player-access-card:hover {
+  border-color: rgba(65, 240, 255, 0.62);
+  box-shadow: 0 10px 24px rgba(4, 10, 26, 0.42), 0 0 20px rgba(65, 240, 255, 0.24);
+}
+
+.player-access-pill {
+  border-color: rgba(65, 240, 255, 0.5);
+  color: #e2f9ff;
+  background: rgba(6, 14, 25, 0.48);
+}
+
+.hero-dot.active,
+.progress span {
+  background: linear-gradient(90deg, var(--neon-cyan), var(--neon-violet), var(--neon-orange));
+  box-shadow: 0 0 14px rgba(65, 240, 255, 0.28);
+}
+
+.badge.unlocked {
+  background: linear-gradient(120deg, rgba(65, 240, 255, 0.95), rgba(119, 255, 210, 0.95));
+  color: #08333a;
+}
+
+.badge.locked {
+  background: linear-gradient(120deg, rgba(255, 164, 104, 0.96), rgba(255, 214, 135, 0.96));
+  color: #4a2a0a;
+}
+
+.mobile-nav {
+  border-top-color: rgba(65, 240, 255, 0.24);
+  background: linear-gradient(180deg, rgba(8, 13, 23, 0.94), rgba(7, 11, 20, 0.98));
+}
+
 @media (max-width: 1220px) {
   .hero-layer {
     grid-template-columns: 1fr;
