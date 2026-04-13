@@ -40,6 +40,7 @@ const envOrigins = (process.env.WEB_ORIGIN || "")
 const allowAllOrigins = envOrigins.includes("*");
 const allowedOrigins = new Set([
   "https://members.chefgabriellacastro.site",
+  "https://members-chefgabi-web.onrender.com",
   "https://chefgabi-members-web.onrender.com",
   ...envOrigins
 ]);
