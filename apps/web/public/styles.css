@@ -879,30 +879,24 @@ body {
   align-content: end;
   gap: 8px;
   background:
-    linear-gradient(180deg, rgba(7, 10, 17, 0.12), rgba(7, 10, 17, 0.94)),
-    linear-gradient(120deg, rgba(255, 135, 64, 0.2), transparent 50%),
-    radial-gradient(70% 80% at 100% 0%, rgba(255, 135, 64, 0.25), transparent 70%),
-    url('/cards/brownie-lucrativo.jpg');
+    linear-gradient(180deg, rgba(7, 10, 17, 0.1), rgba(7, 10, 17, 0.94)),
+    url('/covers/brownie-area.svg');
   background-size: cover;
   background-position: center;
 }
 
 .player-access-card.material .player-access-cover {
   background:
-    linear-gradient(180deg, rgba(7, 10, 17, 0.16), rgba(7, 10, 17, 0.95)),
-    linear-gradient(120deg, rgba(122, 177, 255, 0.24), transparent 52%),
-    radial-gradient(70% 80% at 100% 0%, rgba(122, 177, 255, 0.24), transparent 70%),
-    url('/cards/brownie-lucrativo.jpg');
+    linear-gradient(180deg, rgba(7, 10, 17, 0.1), rgba(7, 10, 17, 0.94)),
+    url('/covers/brownie-material.svg');
   background-size: cover;
   background-position: center;
 }
 
 .player-access-card.networking .player-access-cover {
   background:
-    linear-gradient(180deg, rgba(7, 10, 17, 0.16), rgba(7, 10, 17, 0.95)),
-    linear-gradient(120deg, rgba(110, 224, 171, 0.24), transparent 52%),
-    radial-gradient(70% 80% at 100% 0%, rgba(110, 224, 171, 0.22), transparent 70%),
-    url('/cards/brownie-lucrativo.jpg');
+    linear-gradient(180deg, rgba(7, 10, 17, 0.1), rgba(7, 10, 17, 0.94)),
+    url('/covers/brownie-networking.svg');
   background-size: cover;
   background-position: center;
 }
