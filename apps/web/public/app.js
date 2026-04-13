@@ -613,7 +613,16 @@ function renderPlayer(content) {
     )
     .join("");
 
-  const sectionMap = Object.fromEntries((content.workspace?.sections || []).map((item) => [item.id, item]));
+  const workspaceSectionsRaw = content.workspace?.sections || [];
+  const fallbackBrownieSections =
+    String(content.product?.slug || "").startsWith("brownie-") && !workspaceSectionsRaw.length
+      ? [
+          { id: "members-area", url: BROWNIE_HUB.areaDeMembros },
+          { id: "extra-material", url: BROWNIE_HUB.materialExtra },
+          { id: "networking", url: BROWNIE_HUB.networking }
+        ]
+      : [];
+  const sectionMap = Object.fromEntries([...workspaceSectionsRaw, ...fallbackBrownieSections].map((item) => [item.id, item]));
   const accessCards = [
     {
       id: "members-area",
@@ -720,6 +729,8 @@ async function openProductInternal(productSlug) {
   }
   renderPlayer(data);
   showPlayer();
+  playerSection.scrollIntoView({ behavior: "smooth", block: "start" });
+  window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 async function saveLessonProgress(productSlug, lessonId) {
