@@ -864,6 +864,81 @@ body {
   text-decoration: none;
 }
 
+.player-access-card {
+  border: 1px solid #33415f;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #111a2c;
+  min-height: 255px;
+}
+
+.player-access-cover {
+  height: 100%;
+  padding: 14px;
+  display: grid;
+  align-content: end;
+  gap: 8px;
+  background:
+    linear-gradient(180deg, rgba(7, 10, 17, 0.12), rgba(7, 10, 17, 0.94)),
+    linear-gradient(120deg, rgba(255, 135, 64, 0.2), transparent 50%),
+    radial-gradient(70% 80% at 100% 0%, rgba(255, 135, 64, 0.25), transparent 70%),
+    url('/cards/brownie-lucrativo.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.player-access-card.material .player-access-cover {
+  background:
+    linear-gradient(180deg, rgba(7, 10, 17, 0.16), rgba(7, 10, 17, 0.95)),
+    linear-gradient(120deg, rgba(122, 177, 255, 0.24), transparent 52%),
+    radial-gradient(70% 80% at 100% 0%, rgba(122, 177, 255, 0.24), transparent 70%),
+    url('/cards/brownie-lucrativo.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.player-access-card.networking .player-access-cover {
+  background:
+    linear-gradient(180deg, rgba(7, 10, 17, 0.16), rgba(7, 10, 17, 0.95)),
+    linear-gradient(120deg, rgba(110, 224, 171, 0.24), transparent 52%),
+    radial-gradient(70% 80% at 100% 0%, rgba(110, 224, 171, 0.22), transparent 70%),
+    url('/cards/brownie-lucrativo.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.player-access-pill {
+  display: inline-flex;
+  align-self: start;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  padding: 4px 9px;
+  color: #ffdcbb;
+  background: rgba(7, 10, 17, 0.42);
+}
+
+.player-access-card h4 {
+  margin: 0;
+  font-family: "Outfit", sans-serif;
+  font-size: 1.15rem;
+}
+
+.player-access-card p {
+  margin: 0;
+  color: #d3ddef;
+  font-size: 0.9rem;
+  line-height: 1.35;
+}
+
+.player-access-link {
+  margin-top: 4px;
+  justify-self: start;
+  text-decoration: none;
+}
+
 .mini-card {
   border: 1px solid #33415f;
   border-radius: 12px;

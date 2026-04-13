@@ -58,6 +58,7 @@ const episodesList = document.getElementById("episodesList");
 const achievementsList = document.getElementById("achievementsList");
 const recommendedList = document.getElementById("recommendedList");
 const workspaceList = document.getElementById("workspaceList");
+const playerAccessRail = document.getElementById("playerAccessRail");
 const backHomeBtn = document.getElementById("backHomeBtn");
 const openExternalBtn = document.getElementById("openExternalBtn");
 
@@ -611,6 +612,47 @@ function renderPlayer(content) {
     `
     )
     .join("");
+
+  const sectionMap = Object.fromEntries((content.workspace?.sections || []).map((item) => [item.id, item]));
+  const accessCards = [
+    {
+      id: "members-area",
+      title: "Area de membros externa",
+      description: "Acesse aqui a area de membros externa",
+      kind: "members"
+    },
+    {
+      id: "extra-material",
+      title: "Material em PDF e extra",
+      description: "Acesse aqui o material em PDF e conteudo extra",
+      kind: "material"
+    },
+    {
+      id: "networking",
+      title: "Grupo de Networking",
+      description: "Acesse aqui o grupo de Networking",
+      kind: "networking"
+    }
+  ]
+    .map((item) => ({ ...item, url: sectionMap[item.id]?.url || null }))
+    .filter((item) => item.url);
+
+  playerAccessRail.innerHTML = accessCards.length
+    ? accessCards
+        .map(
+          (item) => `
+        <article class="player-access-card ${item.kind}">
+          <div class="player-access-cover">
+            <span class="player-access-pill">Acesso liberado</span>
+            <h4>${item.title}</h4>
+            <p>${item.description}</p>
+            <a class="btn unlock player-access-link" href="${item.url}" target="_blank" rel="noopener noreferrer">Acessar agora</a>
+          </div>
+        </article>
+      `
+        )
+        .join("")
+    : "<p class='muted'>Sem acessos externos configurados.</p>";
 
   const workspaceSections = (content.workspace?.sections || [])
     .filter((item) => item.available && item.url)
