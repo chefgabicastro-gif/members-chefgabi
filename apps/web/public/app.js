@@ -1,6 +1,19 @@
-﻿let API_BASE =
-  localStorage.getItem("apiBase") ||
-  (window.location.hostname === "localhost" ? "http://localhost:4000" : "https://api.chefgabriellacastro.site");
+﻿const DEFAULT_API_BASE =
+  window.location.hostname === "localhost" ? "http://localhost:4000" : "https://api.chefgabriellacastro.site";
+const API_FALLBACKS = [DEFAULT_API_BASE, "https://chefgabi-members-api.onrender.com"];
+
+function resolveInitialApiBase() {
+  const saved = localStorage.getItem("apiBase");
+  const isLocalHost = window.location.hostname === "localhost";
+  if (!saved) return DEFAULT_API_BASE;
+  if (!isLocalHost && saved.includes("localhost")) {
+    localStorage.removeItem("apiBase");
+    return DEFAULT_API_BASE;
+  }
+  return saved;
+}
+
+let API_BASE = resolveInitialApiBase();
 
 const loginSection = document.getElementById("loginSection");
 const dashboardSection = document.getElementById("dashboardSection");
@@ -11,6 +24,7 @@ const closeOnboardingBtn = document.getElementById("closeOnboardingBtn");
 
 const loginForm = document.getElementById("loginForm");
 const emailInput = document.getElementById("emailInput");
+const loginStatus = document.getElementById("loginStatus");
 const rowsContainer = document.getElementById("rowsContainer");
 const continueRail = document.getElementById("continueRail");
 const logoutBtn = document.getElementById("logoutBtn");
@@ -61,6 +75,40 @@ let heroSlides = [];
 let heroIndex = 0;
 let heroTimer = null;
 let searchTimer = null;
+
+function apiCandidates() {
+  const unique = new Set([API_BASE, ...API_FALLBACKS].filter(Boolean));
+  return Array.from(unique);
+}
+
+async function apiFetch(pathname, options = {}) {
+  let lastError = null;
+  for (const base of apiCandidates()) {
+    try {
+      const response = await fetch(`${base}${pathname}`, options);
+      if (API_BASE !== base) {
+        API_BASE = base;
+        localStorage.setItem("apiBase", base);
+      }
+      return response;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw lastError || new Error("Nao foi possivel conectar na API.");
+}
+
+function setLoginStatus(message = "", type = "error") {
+  if (!loginStatus) return;
+  if (!message) {
+    loginStatus.textContent = "";
+    loginStatus.classList.add("hidden");
+    return;
+  }
+  loginStatus.textContent = message;
+  loginStatus.classList.remove("hidden");
+  loginStatus.style.color = type === "loading" ? "#c8ddff" : "#ffbe97";
+}
 
 const PRODUCT_SECTIONS = [
   { id: "cookies", title: "Seção Cookies", slugPrefix: "cookies-", cover: "/cards/cookie-lucrativo.jpg" },
@@ -197,7 +245,7 @@ function showProfile() {
 async function login(email) {
   let response;
   try {
-    response = await fetch(`${API_BASE}/api/v1/auth/login`, {
+    response = await apiFetch("/api/v1/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email })
@@ -214,14 +262,14 @@ async function login(email) {
 }
 
 async function fetchProducts() {
-  const response = await fetch(`${API_BASE}/api/v1/products`, { headers: authHeaders() });
+  const response = await apiFetch("/api/v1/products", { headers: authHeaders() });
   if (!response.ok) throw new Error("Falha ao carregar catalogo");
   const data = await response.json();
   return data.products || [];
 }
 
 async function searchProducts(query) {
-  const response = await fetch(`${API_BASE}/api/v1/products/search?q=${encodeURIComponent(query)}`, {
+  const response = await apiFetch(`/api/v1/products/search?q=${encodeURIComponent(query)}`, {
     headers: authHeaders()
   });
   if (!response.ok) return [];
@@ -230,13 +278,13 @@ async function searchProducts(query) {
 }
 
 async function fetchProfile() {
-  const response = await fetch(`${API_BASE}/api/v1/profile/me`, { headers: authHeaders() });
+  const response = await apiFetch("/api/v1/profile/me", { headers: authHeaders() });
   if (!response.ok) return null;
   return response.json();
 }
 
 async function fetchBilling() {
-  const response = await fetch(`${API_BASE}/api/v1/billing/history?limit=20`, { headers: authHeaders() });
+  const response = await apiFetch("/api/v1/billing/history?limit=20", { headers: authHeaders() });
   if (!response.ok) return [];
   const data = await response.json();
   return data.items || [];
@@ -447,7 +495,7 @@ function renderProfile(profile, billingItems) {
 }
 
 async function goToCheckout(productSlug) {
-  const response = await fetch(`${API_BASE}/api/v1/checkout/url/${productSlug}`, {
+  const response = await apiFetch(`/api/v1/checkout/url/${productSlug}`, {
     headers: authHeaders()
   });
   const data = await response.json();
@@ -542,7 +590,7 @@ function renderPlayer(content) {
 }
 
 async function openProductInternal(productSlug) {
-  const response = await fetch(`${API_BASE}/api/v1/products/${productSlug}/content`, {
+  const response = await apiFetch(`/api/v1/products/${productSlug}/content`, {
     headers: authHeaders()
   });
   const data = await response.json();
@@ -559,7 +607,7 @@ async function saveLessonProgress(productSlug, lessonId) {
   const watchedPercent = Math.min(100, prev + 25);
   const completed = watchedPercent >= 100;
 
-  await fetch(`${API_BASE}/api/v1/progress/${lessonId}`, {
+  await apiFetch(`/api/v1/progress/${lessonId}`, {
     method: "PUT",
     headers: authHeaders(),
     body: JSON.stringify({ productSlug, watchedPercent, completed })
@@ -643,12 +691,14 @@ function handleNav(nav) {
 
 loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
+  setLoginStatus("Entrando...", "loading");
   try {
     await login(emailInput.value.trim().toLowerCase());
+    setLoginStatus("");
     setView();
     await loadDashboard();
   } catch (error) {
-    alert(error.message);
+    setLoginStatus(error.message || "Falha ao entrar. Tente novamente.");
   }
 });
 

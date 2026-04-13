@@ -342,6 +342,12 @@ body {
   color: #b7c5df;
 }
 
+.login-status {
+  margin: 2px 0 0;
+  font-size: 0.9rem;
+  color: #ffbe97;
+}
+
 .view-panel {
   opacity: 1;
   transform: translateY(0) scale(1);
