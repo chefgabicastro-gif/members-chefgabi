@@ -833,6 +833,37 @@ body {
   font-weight: 700;
 }
 
+.access-card {
+  border: 1px solid #33415f;
+  border-radius: 14px;
+  background:
+    radial-gradient(65% 100% at 110% -10%, rgba(255, 133, 64, 0.24), transparent 70%),
+    linear-gradient(170deg, #111a2c, #0f1728);
+  padding: 14px;
+  min-height: 172px;
+  display: grid;
+  align-content: space-between;
+  gap: 8px;
+}
+
+.access-card h4 {
+  margin: 0;
+  font-family: "Outfit", sans-serif;
+  font-size: 1.05rem;
+}
+
+.access-card p {
+  margin: 0;
+  color: #c0cee8;
+  line-height: 1.35;
+  font-size: 0.9rem;
+}
+
+.access-link {
+  justify-self: start;
+  text-decoration: none;
+}
+
 .mini-card {
   border: 1px solid #33415f;
   border-radius: 12px;

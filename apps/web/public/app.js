@@ -27,6 +27,8 @@ const emailInput = document.getElementById("emailInput");
 const loginStatus = document.getElementById("loginStatus");
 const rowsContainer = document.getElementById("rowsContainer");
 const continueRail = document.getElementById("continueRail");
+const catalogAccessBlock = document.getElementById("catalogAccessBlock");
+const catalogAccessRail = document.getElementById("catalogAccessRail");
 const logoutBtn = document.getElementById("logoutBtn");
 const installBtn = document.getElementById("installBtn");
 
@@ -137,6 +139,12 @@ const PRODUCT_SECTIONS = [
     title: "Seção Orderbumps"
   }
 ];
+
+const BROWNIE_HUB = {
+  areaDeMembros: "https://browniexpress.lovable.app/",
+  materialExtra: "https://drive.google.com/drive/folders/1K39vt9BSN1eorXSFACoh2XCOiaWraIsD?usp=drive_link",
+  networking: "https://chat.whatsapp.com/LmYYTy6HORE5Z9xCNaAA48"
+};
 
 const PLAN_ORDER = { basico: 1, pro: 2, upsell: 3 };
 
@@ -385,6 +393,51 @@ function rowTemplate(row) {
   `;
 }
 
+function isBrownieUnlocked(product) {
+  return Boolean(product?.isUnlocked && typeof product.slug === "string" && product.slug.startsWith("brownie-"));
+}
+
+function renderCatalogAccess(products) {
+  const hasBrownieAccess = (products || []).some((item) => isBrownieUnlocked(item));
+  if (!hasBrownieAccess) {
+    catalogAccessBlock.classList.add("hidden");
+    catalogAccessRail.innerHTML = "";
+    return;
+  }
+
+  const cards = [
+    {
+      title: "Area de membros externa",
+      description: "Acesse aqui a area de membros externa",
+      url: BROWNIE_HUB.areaDeMembros
+    },
+    {
+      title: "Material em PDF e extra",
+      description: "Acesse aqui o material em PDF e conteudo extra",
+      url: BROWNIE_HUB.materialExtra
+    },
+    {
+      title: "Grupo de Networking",
+      description: "Acesse aqui o grupo de Networking",
+      url: BROWNIE_HUB.networking
+    }
+  ];
+
+  catalogAccessRail.innerHTML = cards
+    .map(
+      (item) => `
+      <article class="access-card">
+        <h4>${item.title}</h4>
+        <p>${item.description}</p>
+        <a class="btn unlock access-link" href="${item.url}" target="_blank" rel="noopener noreferrer">Acessar agora</a>
+      </article>
+    `
+    )
+    .join("");
+
+  catalogAccessBlock.classList.remove("hidden");
+}
+
 function bindActionButtons(scope) {
   scope.querySelectorAll(".cta-unlock").forEach((btn) => {
     btn.addEventListener("click", async (event) => {
@@ -462,6 +515,8 @@ function renderRows(products) {
   continueRail.innerHTML = continueItems.length
     ? continueItems.map((item) => cinemaCardTemplate(item)).join("")
     : "<p class='muted'>Nenhum conteudo liberado ainda.</p>";
+
+  renderCatalogAccess(normalizedProducts);
 
   const perProductRows = buildProductRows(normalizedProducts);
   rowsContainer.innerHTML = perProductRows.map((row) => rowTemplate(row)).join("");
