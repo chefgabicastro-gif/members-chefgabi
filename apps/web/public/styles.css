@@ -796,6 +796,43 @@ body {
   gap: 8px;
 }
 
+.workspace-list {
+  display: grid;
+  gap: 8px;
+}
+
+.workspace-link {
+  border: 1px solid #33415f;
+  border-radius: 12px;
+  background: #101726;
+  color: #edf3ff;
+  padding: 9px 10px;
+  text-decoration: none;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.workspace-link:hover {
+  border-color: #4f638a;
+  transform: translateY(-1px);
+}
+
+.workspace-link strong {
+  display: block;
+  font-size: 0.92rem;
+}
+
+.workspace-link p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.workspace-link.bonus strong::before {
+  content: "Bonus • ";
+  color: #ffbd87;
+  font-weight: 700;
+}
+
 .mini-card {
   border: 1px solid #33415f;
   border-radius: 12px;

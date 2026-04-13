@@ -2,17 +2,113 @@ const DEFAULT_PRODUCT_WORKSPACES = {
   "brownie-basico": {
     areaDeMembros: "https://browniexpress.lovable.app/",
     materialExtra: "https://drive.google.com/drive/folders/1K39vt9BSN1eorXSFACoh2XCOiaWraIsD?usp=drive_link",
-    networking: "https://chat.whatsapp.com/LmYYTy6HORE5Z9xCNaAA48"
+    networking: "https://chat.whatsapp.com/LmYYTy6HORE5Z9xCNaAA48",
+    bonus: [
+      {
+        id: "brownie-calc",
+        title: "Calculadora de lucro",
+        type: "ferramenta",
+        url: "/bonus/brownie/calculadora-lucro-brownie.html"
+      },
+      {
+        id: "brownie-checklist",
+        title: "Checklist de producao",
+        type: "checklist",
+        url: "/bonus/brownie/checklist-producao-brownie.md"
+      },
+      {
+        id: "brownie-calendar",
+        title: "Calendario de 30 dias",
+        type: "roteiro",
+        url: "/bonus/brownie/calendario-30-dias-brownie.md"
+      },
+      {
+        id: "brownie-whats",
+        title: "Scripts de WhatsApp",
+        type: "copy",
+        url: "/bonus/brownie/scripts-whatsapp-brownie.txt"
+      },
+      {
+        id: "brownie-ficha",
+        title: "Template de ficha tecnica",
+        type: "template",
+        url: "/bonus/brownie/template-ficha-tecnica-brownie.csv"
+      }
+    ]
   },
   "brownie-pro": {
     areaDeMembros: "https://browniexpress.lovable.app/",
     materialExtra: "https://drive.google.com/drive/folders/1K39vt9BSN1eorXSFACoh2XCOiaWraIsD?usp=drive_link",
-    networking: "https://chat.whatsapp.com/LmYYTy6HORE5Z9xCNaAA48"
+    networking: "https://chat.whatsapp.com/LmYYTy6HORE5Z9xCNaAA48",
+    bonus: [
+      {
+        id: "brownie-calc",
+        title: "Calculadora de lucro",
+        type: "ferramenta",
+        url: "/bonus/brownie/calculadora-lucro-brownie.html"
+      },
+      {
+        id: "brownie-checklist",
+        title: "Checklist de producao",
+        type: "checklist",
+        url: "/bonus/brownie/checklist-producao-brownie.md"
+      },
+      {
+        id: "brownie-calendar",
+        title: "Calendario de 30 dias",
+        type: "roteiro",
+        url: "/bonus/brownie/calendario-30-dias-brownie.md"
+      },
+      {
+        id: "brownie-whats",
+        title: "Scripts de WhatsApp",
+        type: "copy",
+        url: "/bonus/brownie/scripts-whatsapp-brownie.txt"
+      },
+      {
+        id: "brownie-ficha",
+        title: "Template de ficha tecnica",
+        type: "template",
+        url: "/bonus/brownie/template-ficha-tecnica-brownie.csv"
+      }
+    ]
   },
   "brownie-upsell": {
     areaDeMembros: "https://browniexpress.lovable.app/",
     materialExtra: "https://drive.google.com/drive/folders/1K39vt9BSN1eorXSFACoh2XCOiaWraIsD?usp=drive_link",
-    networking: "https://chat.whatsapp.com/LmYYTy6HORE5Z9xCNaAA48"
+    networking: "https://chat.whatsapp.com/LmYYTy6HORE5Z9xCNaAA48",
+    bonus: [
+      {
+        id: "brownie-calc",
+        title: "Calculadora de lucro",
+        type: "ferramenta",
+        url: "/bonus/brownie/calculadora-lucro-brownie.html"
+      },
+      {
+        id: "brownie-checklist",
+        title: "Checklist de producao",
+        type: "checklist",
+        url: "/bonus/brownie/checklist-producao-brownie.md"
+      },
+      {
+        id: "brownie-calendar",
+        title: "Calendario de 30 dias",
+        type: "roteiro",
+        url: "/bonus/brownie/calendario-30-dias-brownie.md"
+      },
+      {
+        id: "brownie-whats",
+        title: "Scripts de WhatsApp",
+        type: "copy",
+        url: "/bonus/brownie/scripts-whatsapp-brownie.txt"
+      },
+      {
+        id: "brownie-ficha",
+        title: "Template de ficha tecnica",
+        type: "template",
+        url: "/bonus/brownie/template-ficha-tecnica-brownie.csv"
+      }
+    ]
   }
 };
 
@@ -61,10 +157,12 @@ function buildSections(workspace) {
 export function getProductWorkspace(productSlug) {
   const map = loadWorkspaceMap();
   const workspace = map[productSlug] || {};
+  const bonus = Array.isArray(workspace.bonus) ? workspace.bonus : [];
 
   return {
     productSlug,
     sections: buildSections(workspace),
-    configured: Boolean(workspace.areaDeMembros || workspace.materialExtra || workspace.networking)
+    bonus,
+    configured: Boolean(workspace.areaDeMembros || workspace.materialExtra || workspace.networking || bonus.length)
   };
 }

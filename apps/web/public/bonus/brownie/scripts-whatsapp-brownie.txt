@@ -1,0 +1,8 @@
+﻿Mensagem 1 - Primeiro contato:
+Oi, tudo bem? Aqui e da Chef em Casa. Hoje abrimos encomendas de brownie artesanal. Quer que eu te envie o cardapio?
+
+Mensagem 2 - Oferta combo:
+Temos combo promocional de brownie hoje: 4 unidades com preco especial. Quer reservar o seu?
+
+Mensagem 3 - Recuperacao:
+Passando para avisar que ainda tenho poucas unidades para entrega hoje. Posso separar pra voce?

@@ -55,6 +55,7 @@ const playerDesc = document.getElementById("playerDesc");
 const episodesList = document.getElementById("episodesList");
 const achievementsList = document.getElementById("achievementsList");
 const recommendedList = document.getElementById("recommendedList");
+const workspaceList = document.getElementById("workspaceList");
 const backHomeBtn = document.getElementById("backHomeBtn");
 const openExternalBtn = document.getElementById("openExternalBtn");
 
@@ -555,6 +556,28 @@ function renderPlayer(content) {
     `
     )
     .join("");
+
+  const workspaceSections = (content.workspace?.sections || [])
+    .filter((item) => item.available && item.url)
+    .map(
+      (item) => `
+      <a class="workspace-link" href="${item.url}" target="_blank" rel="noopener noreferrer">
+        <strong>${item.title}</strong>
+        <p>${item.description || ""}</p>
+      </a>
+    `
+    );
+
+  const workspaceBonus = (content.workspace?.bonus || []).map(
+    (item) => `
+      <a class="workspace-link bonus" href="${item.url}" target="_blank" rel="noopener noreferrer">
+        <strong>${item.title}</strong>
+        <p>${item.type || "bonus"}</p>
+      </a>
+    `
+  );
+
+  workspaceList.innerHTML = [...workspaceSections, ...workspaceBonus].join("") || "<p class='muted'>Sem recursos liberados.</p>";
 
   const normalizedRecommended = normalizeProducts(content.recommended || []);
   recommendedList.innerHTML = normalizedRecommended

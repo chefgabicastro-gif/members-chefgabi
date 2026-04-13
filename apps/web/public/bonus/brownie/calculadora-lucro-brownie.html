@@ -1,0 +1,53 @@
+﻿<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Lucro - Brownie</title>
+  <style>
+    body{font-family:Arial,sans-serif;background:#0f1728;color:#eef3ff;margin:0;padding:20px}
+    .box{max-width:780px;margin:0 auto;background:#131e34;border:1px solid #2d3d5e;border-radius:14px;padding:18px}
+    h1{margin:0 0 14px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    label{font-size:12px;color:#b8c7e3}
+    input{width:100%;padding:10px;border-radius:8px;border:1px solid #31466d;background:#0c1424;color:#fff}
+    .result{margin-top:14px;padding:12px;border-radius:10px;background:#0b1220;border:1px solid #2d3d5e}
+    @media (max-width:700px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Calculadora de Lucro - Brownie</h1>
+    <div class="grid">
+      <div><label>Custo total do lote (R$)</label><input id="custoLote" type="number" value="80" /></div>
+      <div><label>Quantidade de unidades no lote</label><input id="unidades" type="number" value="20" /></div>
+      <div><label>Preço de venda por unidade (R$)</label><input id="preco" type="number" value="12" /></div>
+      <div><label>Taxas por venda (%)</label><input id="taxa" type="number" value="5" /></div>
+      <div><label>Meta de lucro mensal (R$)</label><input id="meta" type="number" value="3000" /></div>
+    </div>
+    <div class="result" id="saida"></div>
+  </div>
+  <script>
+    const ids=["custoLote","unidades","preco","taxa","meta"];
+    const out=document.getElementById("saida");
+    function calc(){
+      const custo=Number(document.getElementById("custoLote").value||0);
+      const unidades=Math.max(1,Number(document.getElementById("unidades").value||1));
+      const preco=Number(document.getElementById("preco").value||0);
+      const taxa=(Number(document.getElementById("taxa").value||0))/100;
+      const meta=Number(document.getElementById("meta").value||0);
+      const custoUnit=custo/unidades;
+      const receitaUnit=preco*(1-taxa);
+      const lucroUnit=receitaUnit-custoUnit;
+      const lucroLote=lucroUnit*unidades;
+      const lotesMeta=lucroLote>0?Math.ceil(meta/lucroLote):0;
+      out.innerHTML=`<strong>Custo por unidade:</strong> R$ ${custoUnit.toFixed(2)}<br>
+      <strong>Lucro por unidade:</strong> R$ ${lucroUnit.toFixed(2)}<br>
+      <strong>Lucro por lote:</strong> R$ ${lucroLote.toFixed(2)}<br>
+      <strong>Lotes para bater a meta:</strong> ${lotesMeta}`;
+    }
+    ids.forEach(id=>document.getElementById(id).addEventListener("input",calc));
+    calc();
+  </script>
+</body>
+</html>
