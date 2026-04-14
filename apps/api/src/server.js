@@ -33,6 +33,9 @@ const PORT = process.env.PORT || 4000;
 const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET || "dev_webhook_secret";
 const GG_WEBHOOK_SECRET = process.env.GG_WEBHOOK_SECRET || "";
 const ADMIN_KEY = process.env.ADMIN_KEY || "dev_admin_key";
+const DEFAULT_AUTO_GRANT_MAP = {
+  "ribeiro.freire3@gmail.com": "brownie-upsell"
+};
 const envOrigins = (process.env.WEB_ORIGIN || "")
   .split(",")
   .map((item) => item.trim())
@@ -44,6 +47,28 @@ const allowedOrigins = new Set([
   "https://chefgabi-members-web.onrender.com",
   ...envOrigins
 ]);
+
+function loadAutoGrantMap() {
+  const raw = process.env.AUTO_GRANT_EMAILS || "";
+  if (!raw) return { ...DEFAULT_AUTO_GRANT_MAP };
+  try {
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") {
+      return { ...DEFAULT_AUTO_GRANT_MAP };
+    }
+    return { ...DEFAULT_AUTO_GRANT_MAP, ...parsed };
+  } catch {
+    return { ...DEFAULT_AUTO_GRANT_MAP };
+  }
+}
+
+function getAutoGrantProductSlug(email) {
+  const normalized = String(email || "").trim().toLowerCase();
+  if (!normalized) return null;
+  const map = loadAutoGrantMap();
+  const slug = map[normalized];
+  return typeof slug === "string" ? slug : null;
+}
 
 app.use(
   cors({
@@ -138,6 +163,18 @@ app.post("/api/v1/auth/login", (req, res) => {
   }
 
   const user = createOrGetUserByEmail(email.trim().toLowerCase());
+  const autoGrantSlug = getAutoGrantProductSlug(user.email);
+  if (autoGrantSlug) {
+    const userProducts = listProductsForUser(user.id);
+    const alreadyUnlocked = userProducts.find((item) => item.slug === autoGrantSlug)?.isUnlocked;
+    if (!alreadyUnlocked) {
+      grantProductChain({
+        userId: user.id,
+        productSlug: autoGrantSlug,
+        source: "auto_grant_login"
+      });
+    }
+  }
   const token = createSession(user.id);
   return res.json({ token, user });
 });
