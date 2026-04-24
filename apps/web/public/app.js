@@ -79,6 +79,7 @@ let heroSlides = [];
 let heroIndex = 0;
 let heroTimer = null;
 let searchTimer = null;
+const HERO_BANNER = "/hero/area-membros-main.webp";
 
 function apiCandidates() {
   const unique = new Set([API_BASE, ...API_FALLBACKS].filter(Boolean));
@@ -477,7 +478,7 @@ function renderHeroSlide(index) {
 
   heroMedia.style.opacity = "0.35";
   setTimeout(() => {
-    heroMedia.style.backgroundImage = `url('${slide.cover}')`;
+    heroMedia.style.backgroundImage = `url('${HERO_BANNER}')`;
     heroMedia.style.opacity = "1";
   }, 120);
 
