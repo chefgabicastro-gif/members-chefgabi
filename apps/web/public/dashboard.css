@@ -1621,19 +1621,34 @@ button {
   .topbar {
     flex-direction: column;
     align-items: stretch;
+    margin-bottom: 14px;
   }
 
   .topbar-actions {
     flex-direction: column;
     align-items: stretch;
+    gap: 10px;
+  }
+
+  .topbar-copy h1 {
+    margin-top: 8px;
+    font-size: clamp(2rem, 12vw, 3rem);
+    line-height: 0.94;
+    max-width: 11ch;
+  }
+
+  .topbar-copy .eyebrow {
+    font-size: 0.66rem;
   }
 
   .member-pill {
     min-width: 0;
+    padding: 12px 14px;
   }
 
   .search-shell {
     min-width: 0;
+    gap: 6px;
   }
 
   .featured-hero {
@@ -1653,8 +1668,18 @@ button {
   .section-head h2,
   .sheet-card h2,
   .reader-hero h2 {
-    font-size: clamp(1.7rem, 8vw, 2.4rem);
+    font-size: clamp(1.35rem, 7vw, 2rem);
     line-height: 1.02;
+    max-width: none;
+  }
+
+  .section-head {
+    align-items: start;
+    margin-bottom: 12px;
+  }
+
+  .section-head.compact h2 {
+    max-width: none;
   }
 
   .featured-actions,
@@ -1681,16 +1706,89 @@ button {
   }
 
   .format-chips {
-    grid-auto-columns: minmax(200px, 240px);
+    grid-auto-flow: row;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: visible;
+    gap: 10px;
   }
 
-  .poster-rail {
-    grid-auto-columns: minmax(250px, 290px);
+  .content-rail {
+    grid-auto-flow: row;
+    grid-template-columns: 1fr;
+    overflow: visible;
+    gap: 12px;
   }
 
+  .poster-rail,
   .audio-rail,
   .extras-rail {
-    grid-auto-columns: minmax(210px, 240px);
+    grid-auto-columns: auto;
+  }
+
+  .media-card-cover,
+  .audio-card-cover,
+  .extra-card-cover {
+    min-height: 180px;
+    height: auto;
+  }
+
+  .media-card-body,
+  .audio-card-body,
+  .extra-card-body {
+    padding: 16px;
+  }
+
+  .media-card h3,
+  .audio-card h3,
+  .extra-card h3,
+  .list-card h3,
+  .editorial-card h3,
+  .editorial-card strong {
+    font-size: 1rem;
+    line-height: 1.18;
+  }
+
+  .media-card p,
+  .audio-card p,
+  .extra-card p,
+  .list-card p,
+  .editorial-card p {
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  .card-tags {
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  .card-tags span {
+    padding: 6px 9px;
+    font-size: 0.72rem;
+  }
+
+  .list-card,
+  .editorial-card,
+  .game-progress-card,
+  .mission-card,
+  .badge-card,
+  .reader-spotlight-card,
+  .phase-card,
+  .checkpoint-card,
+  .cinema-card,
+  .sheet-panel,
+  .mini-panel {
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  .vip-panel {
+    padding: 18px;
+  }
+
+  .vip-panel h3 {
+    font-size: clamp(1.35rem, 7vw, 1.9rem);
+    line-height: 1.02;
   }
 
   .duo-grid {
