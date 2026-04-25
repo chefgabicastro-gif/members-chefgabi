@@ -429,11 +429,13 @@ button {
 .topbar-copy h1 {
   margin: 10px 0 0;
   font-family: "Oswald", sans-serif;
-  font-size: clamp(2.6rem, 4vw, 4.4rem);
-  line-height: 0.96;
+  font-size: clamp(2.35rem, 3.7vw, 4rem);
+  line-height: 0.94;
   letter-spacing: -0.02em;
   text-transform: uppercase;
   color: var(--neon-soft);
+  max-width: 10ch;
+  text-wrap: balance;
 }
 
 .topbar-actions {
@@ -587,13 +589,13 @@ button {
 .section-head h2,
 .sheet-card h2 {
   margin: 14px 0 0;
-  font-size: clamp(1.85rem, 3.2vw, 3rem);
+  font-size: clamp(1.75rem, 2.8vw, 2.7rem);
   line-height: 0.98;
   font-family: "Oswald", sans-serif;
   letter-spacing: -0.01em;
   text-transform: uppercase;
   color: var(--neon-soft);
-  max-width: 18ch;
+  max-width: 15ch;
   text-wrap: balance;
 }
 
@@ -754,7 +756,20 @@ button {
 }
 
 .section-head.compact h2 {
-  max-width: 16ch;
+  max-width: 14ch;
+}
+
+#audios .section-head h2,
+#biblioteca .section-head h2,
+#extras .section-head h2,
+#acervo .section-head h2 {
+  max-width: 13ch;
+}
+
+#leituras .section-head h2,
+#planos .section-head h2,
+#gamificacao .section-head h2 {
+  max-width: 12ch;
 }
 
 .format-chips,
@@ -765,6 +780,7 @@ button {
   overflow-x: auto;
   padding-bottom: 8px;
   scrollbar-width: thin;
+  align-items: stretch;
 }
 
 .format-chips {
@@ -777,6 +793,7 @@ button {
 .extra-card {
   position: relative;
   overflow: hidden;
+  display: block;
   border-radius: 22px;
   border: 1px solid var(--line);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.015), rgba(255, 255, 255, 0.025));
@@ -863,6 +880,9 @@ button {
   width: 100%;
   z-index: 1;
   padding: 18px;
+  display: grid;
+  align-content: end;
+  min-height: 100%;
 }
 
 .card-label {
@@ -882,8 +902,9 @@ button {
 .extra-card h3,
 .list-card h3 {
   margin: 12px 0 0;
-  font-size: 1.2rem;
-  line-height: 1.15;
+  font-size: 1.1rem;
+  line-height: 1.2;
+  text-wrap: balance;
 }
 
 .media-card p,
@@ -960,15 +981,17 @@ button {
 
 .editorial-card h3 {
   margin: 0;
-  font-size: 1.18rem;
-  line-height: 1.22;
+  font-size: 1.08rem;
+  line-height: 1.24;
+  text-wrap: balance;
 }
 
 .editorial-card strong {
   display: block;
   margin-top: 10px;
-  font-size: 1.18rem;
-  line-height: 1.22;
+  font-size: 1.08rem;
+  line-height: 1.24;
+  text-wrap: balance;
 }
 
 .editorial-card p {
@@ -1037,8 +1060,9 @@ button {
 .checkpoint-card h3,
 .cinema-card strong {
   margin: 10px 0 0;
-  font-size: 1.3rem;
-  line-height: 1.16;
+  font-size: 1.18rem;
+  line-height: 1.2;
+  text-wrap: balance;
 }
 
 .reader-spotlight-card p,
@@ -1632,9 +1656,9 @@ button {
 
   .topbar-copy h1 {
     margin-top: 8px;
-    font-size: clamp(2rem, 12vw, 3rem);
+    font-size: clamp(1.85rem, 10.5vw, 2.7rem);
     line-height: 0.94;
-    max-width: 11ch;
+    max-width: 10ch;
   }
 
   .topbar-copy .eyebrow {
@@ -1668,8 +1692,8 @@ button {
   .section-head h2,
   .sheet-card h2,
   .reader-hero h2 {
-    font-size: clamp(1.35rem, 7vw, 2rem);
-    line-height: 1.02;
+    font-size: clamp(1.25rem, 6.6vw, 1.85rem);
+    line-height: 1.04;
     max-width: none;
   }
 
@@ -1744,8 +1768,8 @@ button {
   .list-card h3,
   .editorial-card h3,
   .editorial-card strong {
-    font-size: 1rem;
-    line-height: 1.18;
+    font-size: 0.98rem;
+    line-height: 1.22;
   }
 
   .media-card p,
