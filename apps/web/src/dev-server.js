@@ -10,7 +10,11 @@ const app = express();
 const PORT = process.env.WEB_PORT || 3000;
 const APP_HOSTS = new Set(["app.escoladeproposito.online"]);
 
-app.use(express.static(publicDir));
+app.use(
+  express.static(publicDir, {
+    index: false
+  })
+);
 
 app.get("/", (req, res, next) => {
   const host = String(req.headers.host || "")
