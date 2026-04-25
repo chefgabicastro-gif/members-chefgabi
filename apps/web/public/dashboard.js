@@ -271,7 +271,7 @@ const appData = {
       id: "extra-3",
       label: "Ferramenta",
       title: "Mapa do chamado",
-      description: "Uma superficie para transformar sua historia em direcao, servico e linguagem de cuidado.",
+      description: "Transforme sua historia em direcao, servico, clareza e resposta para a fase que voce esta vivendo hoje.",
       cover: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=900&q=80",
       tags: ["missao", "proposito", "acao"],
       sections: [{ title: "Mapa", description: "Onde sua historia encontra necessidade real." }],
@@ -987,7 +987,7 @@ function managedMediaCardTemplate(item) {
       <span class="card-label">${badgeMap[item.type] || "Conteudo premium"}</span>
       <strong>${item.title}</strong>
       <p>${item.summary || "Material publicado no painel administrativo e liberado na area premium."}</p>
-      <span class="editorial-verse">${item.module || item.phase || item.duration || "Acervo administravel"}</span>
+      <span class="editorial-verse">${item.module || item.phase || item.duration || "Material premium"}</span>
       <div class="card-tags">${[item.duration, item.verse, ...(item.tags || [])]
         .filter(Boolean)
         .map((tag) => `<span>${tag}</span>`)
@@ -1075,8 +1075,8 @@ function renderCollections(query = "") {
     : `
       <article class="editorial-card">
         <span class="card-label">Painel de conteudo</span>
-        <strong>Seu acervo administravel vai aparecer aqui</strong>
-        <p>Assim que voce cadastrar videos, audios, PDFs, infograficos ou estudos no painel, eles entram nesta area premium.</p>
+        <strong>Novos materiais premium vao aparecer aqui</strong>
+        <p>Assim que novos videos, audios, PDFs, infograficos ou estudos forem publicados, eles entram nesta area premium.</p>
       </article>
     `;
 }
