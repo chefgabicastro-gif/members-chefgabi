@@ -69,6 +69,8 @@ const allowedOrigins = new Set([
   "http://127.0.0.1:3000",
   "http://localhost:4000",
   "http://127.0.0.1:4000",
+  "https://app.escoladeproposito.online",
+  "https://api.escoladeproposito.online",
   "https://members.chefgabriellacastro.site",
   "https://members-chefgabi-web.onrender.com",
   "https://chefgabi-members-web.onrender.com",
