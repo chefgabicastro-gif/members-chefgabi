@@ -3,197 +3,626 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0d1018" />
-    <title>Chef em Casa - Gabriella Castro</title>
-    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta
+      name="description"
+      content="Da Crise ao Chamado e uma experiencia crista profunda para transformar dor em direcao, reconstruir a mente e reencontrar o proposito com base biblica, psicologia e neurociencia."
+    />
+    <meta name="theme-color" content="#010303" />
+    <title>Da Crise ao Chamado</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;700;800&family=Outfit:wght@500;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Sora:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
-    <div class="scene-bg"></div>
-    <div class="shell">
-      <aside class="sidebar">
-        <div class="brand-box">
-          <img class="brand-logo" src="/chef-em-casa-logo.png" alt="Chef em Casa Gabriella Castro" />
-          <div class="brand-texts">
-            <span id="brandName" class="brand">Chef em Casa</span>
-            <span id="brandTagline" class="brand-subtitle">Gabriella Castro</span>
-          </div>
-        </div>
+    <div class="page-noise"></div>
+    <div class="ambient ambient-left"></div>
+    <div class="ambient ambient-right"></div>
 
-        <nav class="menu">
-          <a class="menu-item active" href="#" data-nav="home">Home</a>
-          <a class="menu-item" href="#" data-nav="catalogo">Catalogo</a>
-          <a class="menu-item" href="#" data-nav="trilha">Minha trilha</a>
-          <a class="menu-item" href="#" data-nav="perfil">Perfil</a>
-          <a class="menu-item" href="#" data-nav="suporte">Suporte</a>
-        </nav>
-
-        <div class="side-card">
-          <p>Instale o app e acompanhe aulas no celular com acesso rapido.</p>
-          <button id="installBtn" class="btn ghost hidden">Instalar app</button>
-        </div>
-      </aside>
-
-      <main class="container">
-        <header class="topbar">
-          <div class="top-left">
-            <div class="welcome">
-              <span>Portal Premium</span>
-              <strong id="userEmail">Convidada</strong>
-            </div>
-            <nav class="top-nav">
-              <button class="top-nav-item active" data-nav="home">Inicio</button>
-              <button class="top-nav-item" data-nav="catalogo">Catalogo</button>
-              <button class="top-nav-item" data-nav="trilha">Continue assistindo</button>
-              <button class="top-nav-item" data-nav="perfil">Conta</button>
-            </nav>
-          </div>
-          <div class="top-right">
-            <div class="search-wrap">
-              <input id="searchInput" type="search" placeholder="Buscar produto, plano ou categoria..." />
-            </div>
-            <button id="logoutBtn" class="btn ghost hidden">Sair</button>
-          </div>
-        </header>
-
-        <section id="loginSection" class="panel login-shell">
-          <div class="login-glow"></div>
-          <img class="chef-silhouette chef-login" src="/chef-portrait.png" alt="Chef Gabriella Castro" />
-          <img class="login-logo" src="/chef-em-casa-logo.png" alt="Chef em Casa Gabriella Castro" />
-          <div class="login-brand">Area de Membros</div>
-          <h1 id="loginTitle">Seja bem-vinda(o)!</h1>
-          <p id="loginDescription">Acesse com o e-mail usado na compra para liberar seus cursos e order bumps.</p>
-          <form id="loginForm" class="login-form">
-            <label class="login-label" for="emailInput">E-mail</label>
-            <input id="emailInput" type="email" placeholder="seuemail@dominio.com" inputmode="email" autocomplete="email" required />
-            <button type="submit" class="btn solid">Acessar conta</button>
-            <p id="loginStatus" class="login-status hidden" role="status" aria-live="polite"></p>
-          </form>
-          <p class="login-help">Nao recebeu acesso ainda? Fale com o suporte para validar seu cadastro.</p>
-        </section>
-
-        <section id="dashboardSection" class="view-panel hidden">
-          <article id="heroCarousel" class="hero-carousel panel">
-            <div class="hero-media" id="heroMedia"></div>
-            <img class="chef-silhouette chef-hero" src="/chef-portrait.png" alt="Chef Gabriella Castro" />
-            <div class="hero-layer">
-              <div class="hero-content">
-                <span id="heroPill" class="pill">CHEF EM CASA PREMIUM</span>
-                <h2 id="heroTitle">Seu ecossistema de produtos e apps</h2>
-                <p id="heroDescription">Area de membros com design premium e experiencia de streaming.</p>
-                <div class="hero-actions">
-                  <button id="heroWatchBtn" class="btn solid">Assistir agora</button>
-                  <button id="heroDetailsBtn" class="btn ghost">Ver catalogo</button>
-                </div>
-              </div>
-
-              <aside class="hero-side">
-                <div class="metric"><span id="unlockedMetric" class="value">0</span><span class="label">Liberados</span></div>
-                <div class="metric"><span id="lockedMetric" class="value">0</span><span class="label">Bloqueados</span></div>
-                <div class="metric"><span id="journeyMetric" class="value">0%</span><span class="label">Jornada ativa</span></div>
-              </aside>
-            </div>
-            <div id="heroDots" class="hero-dots"></div>
-          </article>
-
-          <section class="row-block" id="continueBlock">
-            <div class="row-head">
-              <h3 class="row-title">Continue assistindo</h3>
-            </div>
-            <div id="continueRail" class="cinema-rail"></div>
-          </section>
-
-          <section class="row-block hidden" id="catalogAccessBlock">
-            <div class="row-head">
-              <h3 class="row-title">Acessos rapidos do Brownie</h3>
-            </div>
-            <div id="catalogAccessRail" class="story-rail"></div>
-          </section>
-
-          <div id="rowsContainer"></div>
-        </section>
-
-        <section id="playerSection" class="view-panel hidden">
-          <div class="player-top">
-            <button id="backHomeBtn" class="btn ghost">Voltar</button>
-            <button id="openExternalBtn" class="btn ghost hidden">Abrir app externo</button>
-          </div>
-
-          <article id="playerHero" class="player-hero panel">
-            <div class="player-overlay">
-              <span id="playerTag" class="pill">Modulo em destaque</span>
-              <h2 id="playerTitle">Titulo do produto</h2>
-              <p id="playerDesc">Descricao da trilha.</p>
-            </div>
-          </article>
-
-          <section class="row-block" id="playerAccessBlock">
-            <div class="row-head">
-              <h3 class="row-title">Acessos do seu produto</h3>
-            </div>
-            <div id="playerAccessRail" class="story-rail"></div>
-          </section>
-
-          <div class="player-grid">
-            <section class="panel">
-              <div class="section-head">
-                <h3>Episodios</h3>
-              </div>
-              <div id="episodesList" class="episodes-list"></div>
-            </section>
-
-            <aside class="right-panel">
-              <div class="panel">
-                <h4>Conquistas</h4>
-                <div id="achievementsList" class="achievements-list"></div>
-              </div>
-              <div class="panel">
-                <h4>Recursos e Bônus</h4>
-                <div id="workspaceList" class="workspace-list"></div>
-              </div>
-              <div class="panel">
-                <h4>Recomendado para voce</h4>
-                <div id="recommendedList" class="mini-list"></div>
-              </div>
-            </aside>
-          </div>
-        </section>
-
-        <section id="profileSection" class="view-panel hidden">
-          <div class="profile-grid">
-            <article class="panel">
-              <h4>Conta Premium</h4>
-              <div id="subscriptionInfo" class="subscription-info"></div>
-            </article>
-            <article class="panel">
-              <h4>Historico de cobrancas</h4>
-              <div id="billingList" class="billing-list"></div>
-            </article>
-          </div>
-        </section>
-      </main>
-    </div>
-
-    <section id="onboardingModal" class="modal hidden">
-      <div class="modal-card panel">
-        <h3>Bem-vinda ao Chef em Casa</h3>
-        <p>Seu portal esta no estilo streaming. Explore o destaque, volte no continue assistindo e use a busca inteligente para achar rapido qualquer produto.</p>
-        <button id="closeOnboardingBtn" class="btn solid">Comecar agora</button>
+    <header class="site-header">
+      <div class="brand-mark">
+        <span class="brand-kicker">Infoproduto cristao</span>
+        <strong><span class="brand-dot"></span>Da Crise ao Chamado</strong>
       </div>
-    </section>
+      <nav class="site-nav">
+        <a href="#metodo">Metodo</a>
+        <a href="#estrutura">Estrutura</a>
+        <a href="#oferta">Oferta</a>
+      </nav>
+      <a class="button button-ghost" href="#oferta">Quero garantir acesso</a>
+    </header>
 
-    <nav class="mobile-nav">
-      <button class="mobile-item active" data-nav="home">Home</button>
-      <button class="mobile-item" data-nav="catalogo">Catalogo</button>
-      <button class="mobile-item" data-nav="trilha">Trilha</button>
-      <button class="mobile-item" data-nav="perfil">Perfil</button>
-    </nav>
+    <main>
+      <section class="hero-section">
+        <div class="hero-copy reveal">
+          <span class="eyebrow">Fe, psicologia e neurociencia sem superficialidade</span>
+          <p class="hero-label">Nome do produto</p>
+          <h1>Da Crise ao Chamado</h1>
+          <p class="hero-subtitle">Quando a dor nao e o fim, mas o inicio do proposito.</p>
+          <p class="hero-description">
+            Uma jornada profunda para quem esta emocionalmente exausto, perdeu a clareza de si mesmo
+            e precisa reconstruir a mente, curar a identidade e discernir o chamado de Deus sem
+            desconectar espiritualidade, ciencia e vida real.
+          </p>
+
+          <div class="hero-actions">
+            <a class="button button-primary" href="#oferta">Quero entrar agora</a>
+            <a class="button button-ghost" href="#estrutura">Ver o que vou receber</a>
+          </div>
+
+          <ul class="trust-list">
+            <li>Base biblica aplicada a dores emocionais reais</li>
+            <li>Estrutura pensada para gerar identificacao, alivio e direcao</li>
+            <li>Narrativa premium com potencial forte de conversao</li>
+          </ul>
+        </div>
+
+        <div class="hero-panel reveal">
+          <div class="hero-card hero-card-main">
+            <span class="card-chip">Mecanismo unico</span>
+            <h2>A dor deixa de ser labirinto e vira mapa.</h2>
+            <p>
+              Em vez de tratar crise como fracasso espiritual, o produto mostra como Deus pode usar
+              exatamente o lugar da ruptura para revelar identidade, reconstruir percepcao e ativar
+              um novo senso de chamado.
+            </p>
+            <div class="hero-card-footer">
+              <span>Crise</span>
+              <span>Identidade</span>
+              <span>Reconstrucao</span>
+              <span>Chamado</span>
+            </div>
+          </div>
+
+          <div class="hero-grid">
+            <article class="hero-card mini-card">
+              <span class="mini-index">01</span>
+              <h3>Crise</h3>
+              <p>Voce entende o que esta acontecendo sem culpa e sem autoacusacao.</p>
+            </article>
+            <article class="hero-card mini-card">
+              <span class="mini-index">02</span>
+              <h3>Reconstrucao</h3>
+              <p>Voce reorganiza mente, emocao e narrativa interna com clareza.</p>
+            </article>
+            <article class="hero-card mini-card">
+              <span class="mini-index">03</span>
+              <h3>Chamado</h3>
+              <p>Voce descobre que a historia que quase te destruiu pode se tornar missao.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="signal-bar reveal">
+        <div>
+          <span class="signal-title">Posicionamento</span>
+          <p>Um produto para quem nao quer frases prontas, mas uma ponte honesta entre ceu, mente e proposito.</p>
+        </div>
+        <div>
+          <span class="signal-title">Promessa</span>
+          <p>Sair da crise com discernimento, linguagem para a propria dor e coragem para continuar.</p>
+        </div>
+        <div>
+          <span class="signal-title">Percepcao</span>
+          <p>Premium, profundo e sensivel o bastante para gerar confianca e alta identificacao.</p>
+        </div>
+      </section>
+
+      <section class="problem-section reveal">
+        <div class="section-heading">
+          <span class="eyebrow">A dor que a pagina precisa nomear</span>
+          <h2>Voce nao esta vendendo apenas um produto. Voce esta dando linguagem para uma guerra interna.</h2>
+        </div>
+
+        <div class="problem-grid">
+          <article class="problem-card">
+            <h3>Para quem sente que desmoronou por dentro</h3>
+            <p>
+              A pessoa continua funcional por fora, mas emocionalmente ja nao sabe como sustentar a
+              propria vida, a propria fe e os proprios pensamentos.
+            </p>
+          </article>
+          <article class="problem-card">
+            <h3>Para quem se tornou o proprio rotulo</h3>
+            <p>
+              O diagnostico, a crise, o medo ou a vergonha deixaram de ser uma fase e passaram a
+              parecer a identidade inteira.
+            </p>
+          </article>
+          <article class="problem-card">
+            <h3>Para quem ainda ama a Deus, mas esta cansado</h3>
+            <p>
+              Existe fe, mas tambem existe exaustao, confusao mental e a sensacao dolorosa de que
+              o proposito ficou distante demais.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="authority-section reveal">
+        <div class="section-heading">
+          <span class="eyebrow">Autoridade emocional</span>
+          <h2>Essa pagina precisa soar como alguem que atravessou a noite e voltou para buscar quem ainda esta nela.</h2>
+        </div>
+
+        <div class="authority-layout">
+          <article class="authority-card authority-story">
+            <span class="card-chip">Tom da marca</span>
+            <h3>Testemunho antes de tecnica</h3>
+            <p>
+              A forca do produto esta em nao falar da crise como teoria. Ele parte de experiencia
+              vivida, acolhimento real e integracao madura entre espiritualidade e cuidado emocional.
+            </p>
+            <p>
+              Isso aumenta confianca, derruba resistencia e diferencia completamente a oferta de
+              devocionais genericos ou promessas simplistas.
+            </p>
+          </article>
+
+          <article class="authority-card authority-pillars">
+            <span class="card-chip">Percepcao de valor</span>
+            <ul>
+              <li>Profundo o bastante para gerar respeito</li>
+              <li>Humano o bastante para gerar identificacao</li>
+              <li>Espiritual o bastante para mover decisao</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section id="metodo" class="method-section reveal">
+        <div class="section-heading">
+          <span class="eyebrow">Framework de conversao e conteudo</span>
+          <h2>O mecanismo central da oferta</h2>
+        </div>
+
+        <div class="method-layout">
+          <article class="method-core">
+            <p class="method-name">Framework sugerido</p>
+            <h3>Restauracao em 4 movimentos</h3>
+            <p>
+              A copy e o produto funcionam melhor quando mostram que a transformacao nao acontece em
+              um unico salto espiritual, mas em quatro etapas que fazem sentido para quem esta no
+              limite.
+            </p>
+            <ol class="steps-list">
+              <li>
+                <strong>Nomear a crise</strong>
+                <span>O leitor entende que o que sente tem explicacao emocional, biblica e humana.</span>
+              </li>
+              <li>
+                <strong>Romper o rotulo</strong>
+                <span>A identidade deixa de girar em torno da dor e volta a se alinhar ao que Deus diz.</span>
+              </li>
+              <li>
+                <strong>Reconstruir a percepcao</strong>
+                <span>A mente aprende a reconhecer verdade, presenca e direcao outra vez.</span>
+              </li>
+              <li>
+                <strong>Responder ao chamado</strong>
+                <span>A historia que parecia atraso se torna preparo para servir, falar e cuidar de outros.</span>
+              </li>
+            </ol>
+          </article>
+
+          <aside class="method-side">
+            <div class="quote-card">
+              <p>"Eu nao escrevo sobre crise. Eu escrevo de dentro dela."</p>
+            </div>
+            <div class="pillars-card">
+              <span>Pilares da percepcao</span>
+              <ul>
+                <li>Autoridade pelo testemunho, nao pelo titulo</li>
+                <li>Profundidade sem parecer clinico demais</li>
+                <li>Promessa espiritual com honestidade emocional</li>
+              </ul>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="benefits-section reveal">
+        <div class="section-heading">
+          <span class="eyebrow">Beneficios da jornada</span>
+          <h2>O visitante precisa enxergar ganhos claros, emocionais e espirituais.</h2>
+        </div>
+
+        <div class="benefits-grid">
+          <article class="benefit-card">
+            <span class="benefit-index">01</span>
+            <h3>Entender a propria dor sem culpa</h3>
+            <p>O aluno para de interpretar tudo como fraqueza espiritual e passa a enxergar contexto, processo e verdade.</p>
+          </article>
+          <article class="benefit-card">
+            <span class="benefit-index">02</span>
+            <h3>Reconstruir identidade e percepcao</h3>
+            <p>A mente volta a organizar aquilo que a crise baguncou: valor, presenca, esperanca e direcao.</p>
+          </article>
+          <article class="benefit-card">
+            <span class="benefit-index">03</span>
+            <h3>Transformar dor em chamado</h3>
+            <p>A historia deixa de ser apenas ferida e comeca a ser ponte para servir, cuidar e testemunhar.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="estrutura" class="curriculum-section reveal">
+        <div class="section-heading">
+          <span class="eyebrow">Arquitetura da experiencia</span>
+          <h2>Uma estrutura pensada para segurar o leitor ate a decisao final</h2>
+        </div>
+
+        <div class="timeline">
+          <article class="timeline-card">
+            <span class="timeline-step">Parte 1</span>
+            <h3>O colapso</h3>
+            <p>Elias, Daniel e Jonas mostram que exaustao, injustica e fuga tambem atingem os chamados.</p>
+          </article>
+          <article class="timeline-card">
+            <span class="timeline-step">Parte 2</span>
+            <h3>O rotulo e a tempestade</h3>
+            <p>O leitor confronta os nomes que recebeu e percebe como medo e identidade distorcem a realidade.</p>
+          </article>
+          <article class="timeline-card">
+            <span class="timeline-step">Parte 3</span>
+            <h3>A reconstrucao</h3>
+            <p>Jo e a mulher do fluxo introduzem restauracao, neuroplasticidade e crescimento apos a dor.</p>
+          </article>
+          <article class="timeline-card">
+            <span class="timeline-step">Parte 4</span>
+            <h3>O chamado</h3>
+            <p>Jeremias fecha a jornada mostrando que a crise pode ser o solo onde o proposito amadurece.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="modules-section reveal">
+        <div class="section-heading">
+          <span class="eyebrow">O que a pessoa vai receber</span>
+          <h2>Estrutura completa do produto principal</h2>
+        </div>
+
+        <div class="modules-list">
+          <article class="module-row">
+            <span class="module-tag">Modulo 1</span>
+            <div>
+              <h3>Quando tudo desmorona</h3>
+              <p>Daniel, Elias e Jonas ajudam o aluno a reconhecer crise, injustica, fuga e exaustao sem mascarar a dor.</p>
+            </div>
+          </article>
+          <article class="module-row">
+            <span class="module-tag">Modulo 2</span>
+            <div>
+              <h3>O rotulo que te prendeu</h3>
+              <p>Naama e os discipulos revelam como medo, rotulo e distorcao emocional sequestram a identidade.</p>
+            </div>
+          </article>
+          <article class="module-row">
+            <span class="module-tag">Modulo 3</span>
+            <div>
+              <h3>Quem voce e depois da crise</h3>
+              <p>Jo e a mulher do fluxo introduzem reconstrucao, restauracao e a possibilidade de uma mente renovada.</p>
+            </div>
+          </article>
+          <article class="module-row">
+            <span class="module-tag">Modulo 4</span>
+            <div>
+              <h3>O chamado que esperava pela sua dor</h3>
+              <p>Jeremias fecha a jornada com sentido, presenca e uma nova resposta para a pergunta: por que eu sobrevivi?</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="deliverables-section reveal">
+        <div class="section-heading">
+          <span class="eyebrow">O que aumenta valor percebido</span>
+          <h2>Estrutura recomendada da oferta</h2>
+        </div>
+
+        <div class="deliverables-grid">
+          <article class="deliverable-card featured">
+            <span class="deliverable-tag">Produto principal</span>
+            <h3>Jornada Da Crise ao Chamado</h3>
+            <p>
+              O produto central com narrativa profunda, estudo biblico aplicado, psicologia acessivel e
+              uma progressao emocional muito clara da dor ao discernimento.
+            </p>
+          </article>
+          <article class="deliverable-card">
+            <span class="deliverable-tag">Bonus estrategico</span>
+            <h3>Guia de leitura e aplicacao</h3>
+            <p>Ajuda o aluno a processar cada capitulo com perguntas, anotacoes e oracoes dirigidas.</p>
+          </article>
+          <article class="deliverable-card">
+            <span class="deliverable-tag">Bonus de retencao</span>
+            <h3>Audio devocional por capitulo</h3>
+            <p>Ideal para gerar mais envolvimento, experiencia premium e consumo emocionalmente guiado.</p>
+          </article>
+          <article class="deliverable-card">
+            <span class="deliverable-tag">Bonus de comunidade</span>
+            <h3>Ambiente de acompanhamento</h3>
+            <p>Pode ser grupo, mentoria ou comunidade para sustentar decisao, pertencimento e testemunhos.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="app-section reveal">
+        <div class="section-heading">
+          <span class="eyebrow">Visao do aplicativo</span>
+          <h2>Baseado nessa linguagem visual, o app pode nascer como um ecossistema de cuidado, consumo e acompanhamento.</h2>
+        </div>
+
+        <div class="app-layout">
+          <article class="app-card app-core">
+            <span class="card-chip">Formato principal</span>
+            <h3>Uma experiencia hibrida entre devocional profundo, trilha guiada e area premium.</h3>
+            <p>
+              O app pode unir leitura, audio, video e acompanhamento em uma mesma jornada, com sensacao
+              de progresso, acolhimento e pertencimento.
+            </p>
+            <div class="app-core-grid">
+              <div>
+                <strong>Escrito</strong>
+                <span>Capitulos, resumos, devocionais, exercicios e reflexoes guiadas.</span>
+              </div>
+              <div>
+                <strong>Audio</strong>
+                <span>Versoes narradas, oracoes guiadas, meditacoes biblicas e escuta noturna.</span>
+              </div>
+              <div>
+                <strong>Video</strong>
+                <span>Aulas curtas, contextualizacao biblica e mensagens de acompanhamento.</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="app-card app-extras">
+            <span class="card-chip">Entregaveis extras</span>
+            <ul>
+              <li>Diario emocional com checkpoints de humor e fe</li>
+              <li>Planos de 7, 14 e 21 dias para momentos especificos</li>
+              <li>Playlists de emergencia para ansiedade, madrugada e esgotamento</li>
+              <li>Oracoes em audio para diferentes estados emocionais</li>
+              <li>Area de testemunhos e comunidade moderada</li>
+              <li>Biblioteca de versiculos por dor, tema e fase da jornada</li>
+              <li>Exercicios praticos em PDF e fichas de acompanhamento</li>
+              <li>Notificacoes com palavra, respiracao guiada e lembretes de continuidade</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="transformation-section reveal">
+        <div class="section-heading">
+          <span class="eyebrow">Antes e depois</span>
+          <h2>A pagina precisa deixar essa transformacao impossivel de ignorar</h2>
+        </div>
+
+        <div class="transformation-board">
+          <div class="state-card">
+            <span class="state-label">Antes</span>
+            <ul>
+              <li>Confusao mental e cansaco espiritual</li>
+              <li>Vergonha da propria historia</li>
+              <li>Sensacao de distancia de Deus</li>
+              <li>Crise interpretada como fracasso</li>
+            </ul>
+          </div>
+          <div class="state-divider">para</div>
+          <div class="state-card accent">
+            <span class="state-label">Depois</span>
+            <ul>
+              <li>Clareza sobre o que esta acontecendo por dentro</li>
+              <li>Nova narrativa de identidade e dignidade</li>
+              <li>Esperanca com profundidade, nao com negacao</li>
+              <li>Direcao para transformar dor em testemunho e missao</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="bonus-section reveal">
+        <div class="section-heading">
+          <span class="eyebrow">Bonus que elevam conversao</span>
+          <h2>Uma stack de oferta mais forte aumenta valor percebido e justifica a decisao agora.</h2>
+        </div>
+
+        <div class="bonus-grid">
+          <article class="bonus-card">
+            <span class="deliverable-tag">Bonus 1</span>
+            <h3>Guia de reflexao e aplicacao</h3>
+            <p>Perguntas, exercicios e espacos de anotacao para a pessoa transformar leitura em processo real.</p>
+          </article>
+          <article class="bonus-card">
+            <span class="deliverable-tag">Bonus 2</span>
+            <h3>Audios devocionais guiados</h3>
+            <p>Capitulos em formato de escuta para aprofundar absorcao, emocao e permanencia no produto.</p>
+          </article>
+          <article class="bonus-card">
+            <span class="deliverable-tag">Bonus 3</span>
+            <h3>Comunidade ou acompanhamento</h3>
+            <p>Ambiente para testemunhos, pertencimento e manutencao da decisao depois da compra.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="objection-section reveal">
+        <div class="section-heading">
+          <span class="eyebrow">Quebra de objecao</span>
+          <h2>O que o visitante precisa ouvir antes de comprar</h2>
+        </div>
+
+        <div class="objection-grid">
+          <article class="objection-card">
+            <h3>"Eu ja orei e continuo mal."</h3>
+            <p>
+              O produto nao trata sofrimento emocional como ausencia de fe. Ele acolhe a complexidade da
+              dor e mostra como Deus tambem atua por meio de processos, cuidado e reconstrucao.
+            </p>
+          </article>
+          <article class="objection-card">
+            <h3>"Tenho medo de encontrar algo superficial."</h3>
+            <p>
+              A proposta se diferencia justamente pela profundidade. Nao e autoajuda gospel, nem linguagem
+              clinica fria. E integracao madura entre Biblia, experiencia vivida e ciencia acessivel.
+            </p>
+          </article>
+          <article class="objection-card">
+            <h3>"Nao sei se minha historia ainda tem jeito."</h3>
+            <p>
+              A promessa nao e perfeicao. E sentido. O produto mostra que o outro lado existe e que a
+              historia que te feriu nao precisa definir o seu fim.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="testimonials-section reveal">
+        <div class="section-heading">
+          <span class="eyebrow">Prova social</span>
+          <h2>Seu site de referencia usa prova para sustentar decisao. Aqui deixei o bloco pronto para receber depoimentos reais.</h2>
+        </div>
+
+        <div class="testimonials-grid">
+          <article class="testimonial-card">
+            <span class="stars">5/5</span>
+            <p>
+              "Eu achei que minha historia tinha acabado na dor. Esse material me devolveu linguagem, fe e coragem para continuar."
+            </p>
+            <strong>Depoimento real 1</strong>
+          </article>
+          <article class="testimonial-card">
+            <span class="stars">5/5</span>
+            <p>
+              "Nao encontrei frases prontas. Encontrei profundidade, acolhimento e uma forma de entender o que eu estava vivendo."
+            </p>
+            <strong>Depoimento real 2</strong>
+          </article>
+          <article class="testimonial-card">
+            <span class="stars">5/5</span>
+            <p>
+              "Foi a primeira vez que senti alguem falando de dor emocional e fe sem me fazer sentir culpado."
+            </p>
+            <strong>Depoimento real 3</strong>
+          </article>
+        </div>
+      </section>
+
+      <section class="guarantee-section reveal">
+        <div class="guarantee-shell">
+          <div class="guarantee-badge">14 dias</div>
+          <div class="guarantee-copy">
+            <span class="eyebrow">Garantia incondicional</span>
+            <h2>Voce pode entrar, consumir e avaliar com seguranca.</h2>
+            <p>
+              Se dentro de 14 dias voce entender que essa jornada nao era para o seu momento,
+              a garantia protege sua decisao. Isso reduz risco, aumenta confianca e tira friccao da compra.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section id="oferta" class="offer-section reveal">
+        <div class="offer-copy">
+          <span class="eyebrow">Bloco final de conversao</span>
+          <h2>Se voce sente que algo em voce ainda esta buscando saida, essa jornada foi feita para esse momento.</h2>
+          <p>
+            Da Crise ao Chamado foi desenhado para nao apenas inspirar, mas conduzir. A experiencia leva o
+            leitor da identificacao profunda para a reorganizacao da mente e, finalmente, para o reencontro
+            com um proposito que faca sentido.
+          </p>
+          <div class="offer-actions">
+            <a class="button button-primary" href="#cta-final">Quero destravar essa jornada</a>
+            <a class="button button-ghost" href="#faq">Tirar minhas duvidas</a>
+          </div>
+        </div>
+
+        <div class="offer-box">
+          <span class="offer-badge">Estrutura premium sugerida</span>
+          <ul class="offer-list">
+            <li>Produto principal com narrativa guiada por capitulos</li>
+            <li>Bonus de aplicacao pratica e audio</li>
+            <li>Pagina pensada para conversao com profundidade e autoridade</li>
+            <li>Garantia de 14 dias, FAQ, prova social e stack de oferta</li>
+          </ul>
+          <p class="offer-footnote">
+            O checkout, depoimentos reais e provas externas podem ser conectados na proxima etapa para elevar ainda mais a conversao.
+          </p>
+        </div>
+      </section>
+
+      <section id="faq" class="faq-section reveal">
+        <div class="section-heading">
+          <span class="eyebrow">FAQ estrategico</span>
+          <h2>Perguntas que ajudam a reduzir friccao</h2>
+        </div>
+
+        <div class="faq-list">
+          <details class="faq-item" open>
+            <summary>Esse produto e para quem esta em crise agora?</summary>
+            <p>
+              Sim, mas com responsabilidade. A linguagem acolhe quem esta no limite e reforca que buscar ajuda
+              profissional tambem e sabedoria.
+            </p>
+          </details>
+          <details class="faq-item">
+            <summary>Qual e a diferenca dele para um devocional comum?</summary>
+            <p>
+              A integracao entre relato vivido, Biblia, psicologia e neurociencia cria uma profundidade rara e
+              faz a pessoa se sentir compreendida de forma completa.
+            </p>
+          </details>
+          <details class="faq-item">
+            <summary>Funciona para quem se sente distante de Deus?</summary>
+            <p>
+              Essa e uma das maiores forcas da proposta. A pagina e o produto falam justamente com quem ainda cre,
+              mas esta cansado, confuso e tentando sobreviver emocionalmente.
+            </p>
+          </details>
+          <details class="faq-item">
+            <summary>Vou receber acesso imediato?</summary>
+            <p>
+              A estrutura da pagina ja esta pronta para acesso imediato apos a compra, com espaco para checkout
+              e entrega automatica do conteudo.
+            </p>
+          </details>
+          <details class="faq-item">
+            <summary>Existe garantia de 14 dias?</summary>
+            <p>
+              Sim. A pagina agora contempla um bloco claro de garantia de 14 dias para reduzir risco percebido
+              e aumentar confianca na decisao.
+            </p>
+          </details>
+          <details class="faq-item">
+            <summary>Esse material substitui ajuda profissional?</summary>
+            <p>
+              Nao. Ele pode caminhar junto com acompanhamento profissional. Inclusive a copy reforca que pedir ajuda
+              tambem e sabedoria.
+            </p>
+          </details>
+        </div>
+      </section>
+
+      <section id="cta-final" class="final-cta reveal">
+        <span class="eyebrow">Fechamento</span>
+        <h2>Voce sobreviveu por uma razao. Esse pode ser o primeiro passo para entende-la.</h2>
+        <p>
+          A dor nao precisa continuar sendo apenas memoria de perda. Ela pode se tornar linguagem,
+          reconstrucao e chamado.
+        </p>
+        <a class="button button-primary" href="#oferta">Quero garantir meu acesso</a>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Copyright (c) 2026 Tarso Freire - Da Crise ao Chamado. Todos os direitos reservados.</p>
+      <span>Este material, sua estrutura, copy e identidade de comunicacao nao podem ser reproduzidos, distribuidos ou copiados sem autorizacao expressa.</span>
+    </footer>
 
     <script src="/app.js"></script>
   </body>

@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#100904" />
+    <title>Da Crise ao Chamado | Premium</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Oswald:wght@400;500;600;700&family=Sora:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="dashboard.css" />
+  </head>
+  <body>
+    <div class="app-noise" aria-hidden="true"></div>
+    <div class="app-glow app-glow-left" aria-hidden="true"></div>
+    <div class="app-glow app-glow-right" aria-hidden="true"></div>
+
+    <section id="authGate" class="auth-gate">
+      <div class="auth-shell">
+        <div class="auth-visual panel">
+          <span class="hero-pill">Area premium</span>
+          <h1>Entre no ambiente onde sua dor encontra direcao.</h1>
+          <p>
+            Uma experiencia cinematografica, profunda e organizada para conduzir a pessoa da crise ao chamado
+            com video, audio, leitura, planos e ferramentas de continuidade.
+          </p>
+
+          <div class="auth-highlights">
+            <article class="auth-highlight">
+              <strong>Acesso sem friccao</strong>
+              <span>Compra aprovada, e-mail reconhecido e entrada liberada sem senha complicada.</span>
+            </article>
+            <article class="auth-highlight">
+              <strong>Experiencia de imersao</strong>
+              <span>Video, audio, leitura, planos e ferramentas organizados como uma jornada viva.</span>
+            </article>
+            <article class="auth-highlight">
+              <strong>Clareza espiritual</strong>
+              <span>Uma atmosfera visual mais solene, biblica e memoravel para valor percebido mais alto.</span>
+            </article>
+          </div>
+        </div>
+
+        <div class="auth-card panel">
+          <div class="auth-card-top">
+            <span class="eyebrow">Da Crise ao Chamado</span>
+            <h2>Seu santuario premium</h2>
+            <p>Use exatamente o mesmo e-mail cadastrado no checkout para validar sua entrada.</p>
+          </div>
+
+          <form id="loginForm" class="auth-form">
+            <label class="auth-label" for="emailInput">Seu melhor e-mail</label>
+            <input
+              id="emailInput"
+              name="email"
+              type="email"
+              inputmode="email"
+              autocomplete="email"
+              placeholder="voce@exemplo.com"
+              required
+            />
+            <button id="loginButton" class="primary-btn auth-submit" type="submit">Entrar com meu e-mail</button>
+            <button id="fillAdminEmailButton" class="ghost-btn auth-helper-btn" type="button">Usar meu e-mail de teste</button>
+          </form>
+
+          <p id="authMessage" class="auth-message" aria-live="polite">
+            Se voce acabou de comprar, o mais importante aqui e entrar com o mesmo e-mail usado no pedido.
+          </p>
+
+          <div id="accessState" class="access-state hidden" aria-live="polite">
+            <span class="card-label">Aguardando liberacao</span>
+            <h3>Ainda nao encontramos acesso premium para este e-mail.</h3>
+            <p>
+              Confira se voce entrou com o e-mail certo da compra. Se o pagamento acabou de ser aprovado, a liberacao
+              pode levar alguns instantes para sincronizar.
+            </p>
+            <div class="access-actions">
+              <button id="retryAccessButton" class="ghost-btn" type="button">Tentar novamente</button>
+              <button id="switchEmailButton" class="link-btn" type="button">Trocar e-mail</button>
+              <a class="link-btn" href="mailto:ribeiro.freire3@gmail.com?subject=Acesso%20Da%20Crise%20ao%20Chamado">Falar com suporte</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div id="memberApp" class="app-shell app-shell-hidden" aria-hidden="true">
+      <aside class="sidebar">
+        <div class="brand-block">
+          <span class="brand-mark"></span>
+          <div>
+            <p class="brand-kicker">Area premium</p>
+            <strong>Da Crise ao Chamado</strong>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav">
+          <button class="sidebar-link active" type="button" data-nav="inicio">Inicio</button>
+          <button class="sidebar-link" type="button" data-nav="modulos">Modulos</button>
+          <button class="sidebar-link" type="button" data-nav="audios">Audios</button>
+          <button class="sidebar-link" type="button" data-nav="leituras">Leituras</button>
+          <button class="sidebar-link" type="button" data-nav="planos">Planos</button>
+          <button class="sidebar-link" type="button" data-nav="gamificacao">Gameficacao</button>
+          <button class="sidebar-link" type="button" data-nav="extras">Extras</button>
+        </nav>
+
+        <article class="sidebar-card">
+          <span class="sidebar-card-label">Sua jornada</span>
+          <strong id="journeyPercent">32%</strong>
+          <p>Voce ja iniciou a reconstrucao. Continue do ponto em que parou e finalize o proximo modulo.</p>
+          <div class="sidebar-progress">
+            <div id="journeyBar" class="sidebar-progress-fill"></div>
+          </div>
+        </article>
+
+        <article class="sidebar-card support">
+          <span class="sidebar-card-label">Escuta de emergencia</span>
+          <strong>Modo madrugada</strong>
+          <p>Ative uma trilha curta com audio, respiracao guiada e palavra para momentos de ansiedade.</p>
+        </article>
+
+        <article class="sidebar-card">
+          <span class="sidebar-card-label">Seu progresso vivo</span>
+          <strong id="sidebarXp">0 XP</strong>
+          <p id="sidebarMission">Comece sua primeira missao do dia e transforme constancia em profundidade.</p>
+        </article>
+      </aside>
+
+      <main class="app-main">
+        <header class="topbar">
+          <div class="topbar-copy">
+            <span class="eyebrow">Experiencia biblica cinematografica</span>
+            <h1>Seu santuario premium de restauracao.</h1>
+          </div>
+
+          <div class="topbar-actions">
+            <label class="search-shell" for="searchInput">
+              <span>Buscar</span>
+              <input id="searchInput" type="search" placeholder="Procure modulo, audio, plano ou recurso..." />
+            </label>
+            <div class="member-pill">
+              <span class="member-pill-label">Acesso</span>
+              <strong id="memberName">Visitante</strong>
+              <small id="memberPlan">Premium</small>
+            </div>
+            <button id="continueBtn" class="primary-btn" type="button">Continuar jornada</button>
+            <button id="logoutButton" class="ghost-btn" type="button">Sair</button>
+          </div>
+        </header>
+
+        <section id="inicio" class="app-section app-section-top">
+          <section class="gamification-strip panel">
+            <article class="game-stat">
+              <span class="eyebrow">Nivel atual</span>
+              <strong id="levelValue">Nivel 1</strong>
+              <p id="levelCopy">Toda profundidade comeca com constancia.</p>
+            </article>
+            <article class="game-stat">
+              <span class="eyebrow">Sequencia</span>
+              <strong id="streakValue">0 dias</strong>
+              <p>Mantenha sua trilha acesa voltando todos os dias.</p>
+            </article>
+            <article class="game-stat">
+              <span class="eyebrow">Badges</span>
+              <strong id="badgeValue">0 desbloqueados</strong>
+              <p>Cada marco conclui uma parte da sua jornada.</p>
+            </article>
+          </section>
+
+          <section class="featured-hero panel">
+            <div class="featured-media">
+              <div class="featured-overlay"></div>
+              <div class="featured-copy">
+                <span id="featuredPill" class="hero-pill">Em destaque</span>
+                <h2 id="featuredTitle">Jornada principal</h2>
+                <p id="featuredDescription"></p>
+                <div id="featuredMeta" class="featured-meta"></div>
+                <div class="featured-actions">
+                  <button id="featuredPlayBtn" class="primary-btn" type="button">Assistir agora</button>
+                  <button id="featuredDetailBtn" class="ghost-btn" type="button">Ver detalhes</button>
+                </div>
+              </div>
+            </div>
+
+            <aside class="featured-side">
+              <div class="mini-panel">
+                <span class="mini-label">Agora tocando</span>
+                <strong id="nowPlayingTitle">Audio noturno</strong>
+                <p id="nowPlayingDescription"></p>
+              </div>
+              <div class="mini-panel">
+                <span class="mini-label">Proximo passo</span>
+                <strong id="nextStepTitle">Modulo 2</strong>
+                <p id="nextStepDescription"></p>
+              </div>
+            </aside>
+          </section>
+
+          <section class="quick-row panel">
+            <div class="section-head compact">
+              <div>
+                <span class="eyebrow">Navegacao rapida</span>
+                <h2>Escolha o formato ideal para agora</h2>
+              </div>
+            </div>
+            <div id="formatChips" class="format-chips"></div>
+          </section>
+
+          <section class="duo-grid">
+            <article class="panel">
+              <div class="section-head compact">
+                <div>
+                  <span class="eyebrow">Continue de onde parou</span>
+                  <h2>Sua fila premium</h2>
+                </div>
+              </div>
+              <div id="continueList" class="list-stack"></div>
+            </article>
+
+            <article class="panel">
+              <div class="section-head compact">
+                <div>
+                  <span class="eyebrow">Modo madrugada</span>
+                  <h2>Resposta rapida para momentos de crise</h2>
+                </div>
+              </div>
+              <div id="emergencyList" class="list-stack"></div>
+            </article>
+          </section>
+        </section>
+
+        <section id="modulos" class="app-section section-block">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Principal</span>
+              <h2>Jornada por modulos</h2>
+            </div>
+          </div>
+          <div id="modulesRail" class="content-rail poster-rail"></div>
+        </section>
+
+        <section id="audios" class="app-section section-block">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Escuta guiada</span>
+              <h2>Audios para diferentes estados emocionais</h2>
+            </div>
+          </div>
+          <div id="audioRail" class="content-rail audio-rail"></div>
+        </section>
+
+        <section id="acervo" class="app-section section-block">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Acervo administravel</span>
+              <h2>Videos, audios, PDFs e infograficos publicados no painel</h2>
+            </div>
+          </div>
+          <div id="adminMediaGrid" class="editorial-grid"></div>
+        </section>
+
+        <section id="leituras" class="app-section duo-grid">
+          <article class="panel">
+            <div class="section-head compact">
+              <div>
+                <span class="eyebrow">Leituras e estudo</span>
+                <h2>Conteudo escrito</h2>
+              </div>
+            </div>
+            <div id="readingList" class="list-stack"></div>
+          </article>
+
+          <article class="panel">
+            <div class="section-head compact">
+              <div>
+                <span class="eyebrow">Biblioteca premium</span>
+                <h2>Versiculos, devocionais e PDFs</h2>
+              </div>
+            </div>
+            <div id="libraryList" class="list-stack"></div>
+          </article>
+        </section>
+
+        <section id="biblioteca" class="app-section section-block">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Biblioteca editorial</span>
+              <h2>Conteudo escrito pronto para crescer com seu produto</h2>
+            </div>
+          </div>
+          <div id="contentLibraryGrid" class="editorial-grid"></div>
+        </section>
+
+        <section id="estudio" class="app-section duo-grid">
+          <article class="panel immersive-panel">
+            <div class="section-head compact">
+              <div>
+                <span class="eyebrow">Modo foco</span>
+                <h2>Estudio imersivo da semana</h2>
+              </div>
+            </div>
+            <div id="readerSpotlight" class="reader-spotlight"></div>
+          </article>
+
+          <article class="panel">
+            <div class="section-head compact">
+              <div>
+                <span class="eyebrow">Trilhas emocionais</span>
+                <h2>Entre pela fase da sua alma</h2>
+              </div>
+            </div>
+            <div id="phaseRail" class="phase-rail"></div>
+          </article>
+        </section>
+
+        <section class="app-section duo-grid">
+          <article class="panel">
+            <div class="section-head compact">
+              <div>
+                <span class="eyebrow">Checkpoint vivo</span>
+                <h2>Seu ponto de clareza hoje</h2>
+              </div>
+            </div>
+            <div id="checkpointPanel" class="checkpoint-panel"></div>
+          </article>
+
+          <article class="panel">
+            <div class="section-head compact">
+              <div>
+                <span class="eyebrow">Atmosfera premium</span>
+                <h2>Uma experiencia feita para permanencia</h2>
+              </div>
+            </div>
+            <div class="cinema-stack">
+              <article class="cinema-card">
+                <span class="card-label">Ritmo</span>
+                <strong>Leitura, audio e reflexao no mesmo fluxo</strong>
+                <p>O app deixa de parecer uma lista de aulas e vira um ambiente de acompanhamento emocional e espiritual.</p>
+              </article>
+              <article class="cinema-card">
+                <span class="card-label">Cinema interior</span>
+                <strong>Tipografia, glow, profundidade e pausa</strong>
+                <p>Cada estudo abre com atmosfera própria, frase ancora, base biblica e espaco para processamento real.</p>
+              </article>
+              <article class="cinema-card">
+                <span class="card-label">Retencao</span>
+                <strong>Missao, progresso e memoria da jornada</strong>
+                <p>A pessoa sente que esta atravessando uma jornada viva, e nao apenas consumindo conteudo solto.</p>
+              </article>
+            </div>
+          </article>
+        </section>
+
+        <section id="gamificacao" class="app-section duo-grid">
+          <article class="panel">
+            <div class="section-head compact">
+              <div>
+                <span class="eyebrow">Jornada viva</span>
+                <h2>Sistema de gameficacao</h2>
+              </div>
+            </div>
+            <div class="game-panel">
+              <div class="game-progress-card">
+                <span class="card-label">XP total</span>
+                <strong id="xpValue">0</strong>
+                <p id="xpStatus">Sua consistencia ainda vai acender os primeiros marcos.</p>
+                <div class="sidebar-progress">
+                  <div id="xpBar" class="sidebar-progress-fill"></div>
+                </div>
+              </div>
+              <div id="missionList" class="mission-list"></div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="section-head compact">
+              <div>
+                <span class="eyebrow">Conquistas</span>
+                <h2>Badges e marcos</h2>
+              </div>
+            </div>
+            <div id="badgeGrid" class="badge-grid"></div>
+          </article>
+        </section>
+
+        <section id="planos" class="app-section duo-grid">
+          <article class="panel">
+            <div class="section-head compact">
+              <div>
+                <span class="eyebrow">Planos guiados</span>
+                <h2>Rotas de acompanhamento</h2>
+              </div>
+            </div>
+            <div id="plansList" class="list-stack"></div>
+          </article>
+
+          <article class="panel">
+            <div class="section-head compact">
+              <div>
+                <span class="eyebrow">Progresso e rotina</span>
+                <h2>Ferramentas de continuidade</h2>
+              </div>
+            </div>
+            <div id="toolsList" class="list-stack"></div>
+          </article>
+        </section>
+
+        <section id="extras" class="app-section section-block">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Recursos extras</span>
+              <h2>Ferramentas que aumentam permanencia e transformacao</h2>
+            </div>
+          </div>
+          <div id="extrasRail" class="content-rail extras-rail"></div>
+        </section>
+      </main>
+    </div>
+
+    <div id="detailSheet" class="detail-sheet hidden" aria-hidden="true">
+      <div class="sheet-backdrop" data-close-sheet="true"></div>
+      <section class="sheet-card">
+        <button class="sheet-close" type="button" data-close-sheet="true" aria-label="Fechar detalhes">x</button>
+        <div class="sheet-hero">
+          <div class="sheet-hero-copy">
+            <span id="sheetType" class="hero-pill">Modulo</span>
+            <h2 id="sheetTitle">Titulo</h2>
+            <p id="sheetDescription">Descricao</p>
+            <div id="sheetTags" class="sheet-tags"></div>
+          </div>
+          <div class="sheet-toggle">
+            <span>Baixar conteudo</span>
+            <button id="downloadToggle" class="toggle-btn" type="button" aria-label="Baixar conteudo">
+              <span></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="sheet-body">
+          <article class="sheet-panel">
+            <span class="eyebrow">Estrutura</span>
+            <div id="sheetModules" class="sheet-list"></div>
+          </article>
+          <article class="sheet-panel">
+            <span class="eyebrow">Entregaveis</span>
+            <div id="sheetDeliverables" class="sheet-list"></div>
+          </article>
+        </div>
+
+        <div class="sheet-actions">
+          <button id="sheetPrimaryBtn" class="primary-btn" type="button">Abrir agora</button>
+          <button class="ghost-btn" type="button" data-close-sheet="true">Voltar</button>
+        </div>
+      </section>
+    </div>
+
+    <div id="focusReader" class="focus-reader hidden" aria-hidden="true">
+      <div class="reader-backdrop" data-close-reader="true"></div>
+      <section class="reader-card">
+        <button class="reader-back-btn ghost-btn" type="button" data-close-reader="true">Voltar</button>
+        <button class="sheet-close" type="button" data-close-reader="true" aria-label="Fechar leitura">x</button>
+        <div class="reader-hero">
+          <span id="readerModule" class="hero-pill">Modulo</span>
+          <h2 id="readerTitle">Titulo</h2>
+          <p id="readerSummary"></p>
+          <div id="readerTags" class="sheet-tags"></div>
+        </div>
+
+        <div class="reader-layout">
+          <article class="reader-main">
+            <div class="reader-block intro-block">
+              <span class="eyebrow">Abertura narrativa</span>
+              <div id="readerIntro" class="reader-richtext"></div>
+            </div>
+            <div class="reader-block">
+              <span class="eyebrow">Base biblica</span>
+              <h3 id="readerVerse">Verso</h3>
+              <div id="readerStudyBase" class="reader-richtext"></div>
+            </div>
+            <div class="reader-block">
+              <span class="eyebrow">Conceito central</span>
+              <div id="readerConcept" class="reader-richtext"></div>
+            </div>
+            <div class="reader-block">
+              <span class="eyebrow">Reflexao intensa</span>
+              <div id="readerReflection" class="reader-richtext"></div>
+            </div>
+            <div class="reader-block">
+              <span class="eyebrow">Aplicacao e resposta</span>
+              <div id="readerApplication" class="reader-richtext"></div>
+            </div>
+            <div class="reader-block">
+              <span class="eyebrow">O que isso revela sobre voce</span>
+              <div id="readerSelfReveal" class="reader-richtext"></div>
+            </div>
+            <div class="reader-block">
+              <span class="eyebrow">O que isso revela sobre Deus</span>
+              <div id="readerGodReveal" class="reader-richtext"></div>
+            </div>
+            <div class="reader-block">
+              <span class="eyebrow">Journaling guiado</span>
+              <div id="readerJournaling" class="reader-richtext"></div>
+            </div>
+            <div class="reader-block prayer-block">
+              <span class="eyebrow">Oracao guiada</span>
+              <div id="readerPrayer" class="reader-richtext"></div>
+            </div>
+            <div class="reader-block closing-block">
+              <span class="eyebrow">Encerramento liturgico</span>
+              <div id="readerClosing" class="reader-richtext"></div>
+            </div>
+          </article>
+
+          <aside class="reader-side">
+            <div class="reader-note-card">
+              <span class="eyebrow">Checkpoint pessoal</span>
+              <strong>O que Deus esta mexendo em voce aqui?</strong>
+              <textarea id="readerJournal" placeholder="Escreva sua resposta, sua dor, sua verdade ou a decisao que esta nascendo..."></textarea>
+              <div class="reader-actions">
+                <button id="saveJournalButton" class="primary-btn" type="button">Salvar checkpoint</button>
+                <button id="completeReadingButton" class="ghost-btn" type="button">Concluir leitura</button>
+              </div>
+              <p id="journalStatus" class="journal-status">Seu checkpoint fica salvo neste navegador para voce continuar depois.</p>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </div>
+
+    <div id="onboardingModal" class="onboarding-modal hidden" aria-hidden="true">
+      <div class="reader-backdrop" data-close-onboarding="true"></div>
+      <section class="onboarding-card">
+        <button class="sheet-close" type="button" data-close-onboarding="true" aria-label="Fechar onboarding">x</button>
+        <span class="hero-pill">Boas-vindas</span>
+        <h2>Seu primeiro passo dentro da area premium</h2>
+        <p>
+          O app ja esta estruturado para acolher, aprofundar e conduzir. Em vez de se perder no volume de conteudo,
+          voce pode entrar pela rota certa e viver a jornada com intencao.
+        </p>
+
+        <div class="onboarding-grid">
+          <article class="onboarding-step">
+            <span class="card-label">1. Entre pela dor atual</span>
+            <p>Use as trilhas emocionais e a biblioteca escrita para chegar no estudo que conversa com o seu momento.</p>
+          </article>
+          <article class="onboarding-step">
+            <span class="card-label">2. Marque checkpoints</span>
+            <p>Escreva, salve e volte. O app foi desenhado para profundidade com memoria, nao para consumo rapido.</p>
+          </article>
+          <article class="onboarding-step">
+            <span class="card-label">3. Siga a jornada</span>
+            <p>Missões, badges e progresso existem para manter constancia e transformar visita em processo real.</p>
+          </article>
+        </div>
+
+        <div class="sheet-actions">
+          <button id="startJourneyButton" class="primary-btn" type="button">Comecar pelo Modulo 1</button>
+          <button id="exploreAppButton" class="ghost-btn" type="button">Explorar a plataforma</button>
+        </div>
+      </section>
+    </div>
+
+    <nav class="mobile-nav">
+      <button class="mobile-link active" type="button" data-nav="inicio">Inicio</button>
+      <button class="mobile-link" type="button" data-nav="modulos">Modulos</button>
+      <button class="mobile-link" type="button" data-nav="audios">Audios</button>
+      <button class="mobile-link" type="button" data-nav="planos">Planos</button>
+      <button class="mobile-link" type="button" data-nav="gamificacao">Game</button>
+      <button class="mobile-link" type="button" data-nav="extras">Extras</button>
+    </nav>
+
+    <script src="dashboard.js"></script>
+  </body>
+</html>

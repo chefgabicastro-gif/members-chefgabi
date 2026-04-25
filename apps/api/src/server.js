@@ -6,19 +6,23 @@ import { requireAuth } from "./lib/auth.js";
 import {
   createOrGetUserByEmail,
   createSession,
+  deleteContentItem,
   findUserByEmail,
+  findContentItemById,
   getBillingHistory,
   getHomeRows,
   getProgressByProduct,
   getUserProfile,
   grantEntitlement,
   hasWebhookEvent,
+  listContentItems,
   listEntitlementsForUser,
   listProductsForUser,
   listUsers,
   listWebhookEvents,
   revokeEntitlement,
   saveWebhookEvent,
+  upsertContentItem,
   upsertLessonProgress
 } from "./lib/db.js";
 import { products } from "./config/products.js";
@@ -27,6 +31,25 @@ import { getCheckoutUrl } from "./config/checkout.js";
 import { getAccessLink } from "./config/access-links.js";
 import { buildProductContent } from "./config/content.js";
 import { getProductWorkspace } from "./config/product-workspaces.js";
+import { devotionalConfig, validateSchedule } from "./config/devotional.js";
+import {
+  deactivateDevotionalSubscriber,
+  findDevotionalSubscriberByPhone,
+  upsertDevotionalSubscriber
+} from "./lib/db.js";
+import { ensureWhatsAppNumber } from "./integrations/evolution.js";
+import { getDevotionalStatus, runDevotionalDispatch } from "./services/devotional-service.js";
+import { startDevotionalScheduler } from "./services/devotional-scheduler.js";
+import {
+  connectEvolutionInstance,
+  createEvolutionInstance,
+  deleteEvolutionInstance,
+  fetchEvolutionConnectionState,
+  fetchEvolutionInstances,
+  logoutEvolutionInstance,
+  restartEvolutionInstance,
+  selectActiveEvolutionInstance
+} from "./services/evolution-instance-service.js";
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -42,6 +65,10 @@ const envOrigins = (process.env.WEB_ORIGIN || "")
   .filter(Boolean);
 const allowAllOrigins = envOrigins.includes("*");
 const allowedOrigins = new Set([
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+  "http://localhost:4000",
+  "http://127.0.0.1:4000",
   "https://members.chefgabriellacastro.site",
   "https://members-chefgabi-web.onrender.com",
   "https://chefgabi-members-web.onrender.com",
@@ -153,7 +180,16 @@ function revokeProductChain({ userId, productSlug, source }) {
 }
 
 app.get("/health", (_req, res) => {
-  res.json({ status: "ok", service: "members-api", time: new Date().toISOString() });
+  res.json({
+    status: "ok",
+    service: "members-api",
+    time: new Date().toISOString(),
+    devotional: {
+      enabled: devotionalConfig.enabled,
+      timezone: devotionalConfig.timezone,
+      schedule: devotionalConfig.schedule
+    }
+  });
 });
 
 app.post("/api/v1/auth/login", (req, res) => {
@@ -273,6 +309,11 @@ app.get("/api/v1/products/:productSlug/content", requireAuth, (req, res) => {
   const lessonProgress = getProgressByProduct(req.user.id, productSlug);
   const workspace = getProductWorkspace(productSlug);
   return res.json({ ...content, externalAccessUrl, lessonProgress, workspace });
+});
+
+app.get("/api/v1/content-items", requireAuth, (_req, res) => {
+  const items = listContentItems({ includeDrafts: false });
+  return res.json({ items });
 });
 
 app.get("/api/v1/profile/me", requireAuth, (req, res) => {
@@ -408,6 +449,272 @@ app.get("/api/v1/admin/webhooks/events", (req, res) => {
   return res.json({ events: items });
 });
 
+app.post("/api/v1/devotional/subscribers", (req, res) => {
+  try {
+    const { phone, name, notes, timezone, schedule, isActive, source } = req.body || {};
+    if (!phone) {
+      return res.status(400).json({ error: "phone is required" });
+    }
+
+    const normalizedPhone = ensureWhatsAppNumber(phone);
+    const finalSchedule =
+      Array.isArray(schedule) && schedule.length > 0 ? schedule : devotionalConfig.schedule;
+    if (!validateSchedule(finalSchedule)) {
+      return res.status(400).json({ error: "schedule must use HH:MM format" });
+    }
+
+    const subscriber = upsertDevotionalSubscriber({
+      phone: normalizedPhone,
+      name,
+      notes,
+      timezone: timezone || devotionalConfig.timezone,
+      schedule: finalSchedule,
+      isActive: typeof isActive === "boolean" ? isActive : true,
+      source: source || "api"
+    });
+
+    return res.status(201).json({ subscriber });
+  } catch (error) {
+    return res.status(400).json({ error: error.message || "Invalid subscriber payload" });
+  }
+});
+
+app.get("/api/v1/devotional/subscribers/:phone", (req, res) => {
+  try {
+    const normalizedPhone = ensureWhatsAppNumber(req.params.phone);
+    const subscriber = findDevotionalSubscriberByPhone(normalizedPhone);
+    if (!subscriber) {
+      return res.status(404).json({ error: "Subscriber not found" });
+    }
+    return res.json({ subscriber });
+  } catch (error) {
+    return res.status(400).json({ error: error.message || "Invalid phone" });
+  }
+});
+
+app.delete("/api/v1/devotional/subscribers/:phone", (req, res) => {
+  try {
+    const normalizedPhone = ensureWhatsAppNumber(req.params.phone);
+    const subscriber = deactivateDevotionalSubscriber(normalizedPhone);
+    if (!subscriber) {
+      return res.status(404).json({ error: "Subscriber not found" });
+    }
+    return res.json({ subscriber });
+  } catch (error) {
+    return res.status(400).json({ error: error.message || "Invalid phone" });
+  }
+});
+
+app.get("/api/v1/admin/devotional/status", (req, res) => {
+  const key = req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) {
+    return res.status(401).json({ error: "Unauthorized admin key" });
+  }
+  return res.json(getDevotionalStatus());
+});
+
+app.get("/api/v1/admin/content-items", (req, res) => {
+  const key = req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) {
+    return res.status(401).json({ error: "Unauthorized admin key" });
+  }
+  return res.json({ items: listContentItems({ includeDrafts: true }) });
+});
+
+app.post("/api/v1/admin/content-items", (req, res) => {
+  const key = req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) {
+    return res.status(401).json({ error: "Unauthorized admin key" });
+  }
+
+  const title = String(req.body?.title || "").trim();
+  const type = String(req.body?.type || "").trim();
+  if (!title || !type) {
+    return res.status(400).json({ error: "title and type are required" });
+  }
+
+  const item = upsertContentItem(req.body || {});
+  return res.status(201).json({ item });
+});
+
+app.put("/api/v1/admin/content-items/:contentId", (req, res) => {
+  const key = req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) {
+    return res.status(401).json({ error: "Unauthorized admin key" });
+  }
+
+  const existing = findContentItemById(req.params.contentId);
+  if (!existing) {
+    return res.status(404).json({ error: "Content item not found" });
+  }
+
+  const item = upsertContentItem({
+    ...existing,
+    ...(req.body || {}),
+    id: existing.id
+  });
+  return res.json({ item });
+});
+
+app.delete("/api/v1/admin/content-items/:contentId", (req, res) => {
+  const key = req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) {
+    return res.status(401).json({ error: "Unauthorized admin key" });
+  }
+
+  const removed = deleteContentItem(req.params.contentId);
+  if (!removed) {
+    return res.status(404).json({ error: "Content item not found" });
+  }
+
+  return res.json({ success: true, removed });
+});
+
+app.get("/api/v1/admin/devotional/evolution/instances", async (req, res) => {
+  const key = req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) {
+    return res.status(401).json({ error: "Unauthorized admin key" });
+  }
+
+  try {
+    const instances = await fetchEvolutionInstances();
+    return res.json({ instances, activeInstance: getDevotionalStatus().activeEvolutionInstance });
+  } catch (error) {
+    return res.status(500).json({ error: error.message || "Failed to fetch Evolution instances" });
+  }
+});
+
+app.post("/api/v1/admin/devotional/evolution/instances", async (req, res) => {
+  const key = req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) {
+    return res.status(401).json({ error: "Unauthorized admin key" });
+  }
+
+  const instanceName = String(req.body?.instanceName || "").trim();
+  const number = String(req.body?.number || "").trim();
+  const token = String(req.body?.token || "").trim();
+  if (!instanceName) {
+    return res.status(400).json({ error: "instanceName is required" });
+  }
+
+  try {
+    const created = await createEvolutionInstance({ instanceName, number, token });
+    selectActiveEvolutionInstance(instanceName);
+    return res.status(201).json({ created, activeInstance: instanceName });
+  } catch (error) {
+    return res.status(500).json({ error: error.message || "Failed to create Evolution instance" });
+  }
+});
+
+app.post("/api/v1/admin/devotional/evolution/instances/:instanceName/select", (req, res) => {
+  const key = req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) {
+    return res.status(401).json({ error: "Unauthorized admin key" });
+  }
+
+  const instanceName = String(req.params.instanceName || "").trim();
+  if (!instanceName) {
+    return res.status(400).json({ error: "instanceName is required" });
+  }
+
+  const settings = selectActiveEvolutionInstance(instanceName);
+  return res.json({ success: true, settings });
+});
+
+app.get("/api/v1/admin/devotional/evolution/instances/:instanceName/state", async (req, res) => {
+  const key = req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) {
+    return res.status(401).json({ error: "Unauthorized admin key" });
+  }
+
+  try {
+    const state = await fetchEvolutionConnectionState(req.params.instanceName);
+    return res.json({ state });
+  } catch (error) {
+    return res.status(500).json({ error: error.message || "Failed to fetch Evolution state" });
+  }
+});
+
+app.post("/api/v1/admin/devotional/evolution/instances/:instanceName/connect", async (req, res) => {
+  const key = req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) {
+    return res.status(401).json({ error: "Unauthorized admin key" });
+  }
+
+  try {
+    const phone = req.body?.number ? ensureWhatsAppNumber(req.body.number) : "";
+    const qr = await connectEvolutionInstance(req.params.instanceName, phone);
+    return res.json({ qr });
+  } catch (error) {
+    return res.status(500).json({ error: error.message || "Failed to connect Evolution instance" });
+  }
+});
+
+app.post("/api/v1/admin/devotional/evolution/instances/:instanceName/restart", async (req, res) => {
+  const key = req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) {
+    return res.status(401).json({ error: "Unauthorized admin key" });
+  }
+
+  try {
+    const result = await restartEvolutionInstance(req.params.instanceName);
+    return res.json({ result });
+  } catch (error) {
+    return res.status(500).json({ error: error.message || "Failed to restart Evolution instance" });
+  }
+});
+
+app.post("/api/v1/admin/devotional/evolution/instances/:instanceName/logout", async (req, res) => {
+  const key = req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) {
+    return res.status(401).json({ error: "Unauthorized admin key" });
+  }
+
+  try {
+    const result = await logoutEvolutionInstance(req.params.instanceName);
+    return res.json({ result });
+  } catch (error) {
+    return res.status(500).json({ error: error.message || "Failed to logout Evolution instance" });
+  }
+});
+
+app.delete("/api/v1/admin/devotional/evolution/instances/:instanceName", async (req, res) => {
+  const key = req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) {
+    return res.status(401).json({ error: "Unauthorized admin key" });
+  }
+
+  try {
+    const result = await deleteEvolutionInstance(req.params.instanceName);
+    return res.json({ result });
+  } catch (error) {
+    return res.status(500).json({ error: error.message || "Failed to delete Evolution instance" });
+  }
+});
+
+app.post("/api/v1/admin/devotional/send-now", async (req, res) => {
+  const key = req.headers["x-admin-key"];
+  if (key !== ADMIN_KEY) {
+    return res.status(401).json({ error: "Unauthorized admin key" });
+  }
+
+  try {
+    const phone = req.body?.phone ? ensureWhatsAppNumber(req.body.phone) : null;
+    const slot = req.body?.slot ? String(req.body.slot) : null;
+    if (slot && !/^\d{2}:\d{2}$/.test(slot)) {
+      return res.status(400).json({ error: "slot must use HH:MM format" });
+    }
+
+    const result = await runDevotionalDispatch({
+      forceSlot: slot,
+      targetPhone: phone
+    });
+    return res.json(result);
+  } catch (error) {
+    return res.status(500).json({ error: error.message || "Unexpected devotional error" });
+  }
+});
+
 app.post("/api/v1/webhooks/:provider", (req, res) => {
   const provider = req.params.provider;
   const signature = req.headers["x-webhook-secret"];
@@ -448,6 +755,7 @@ app.post("/api/v1/webhooks/:provider", (req, res) => {
 });
 
 app.listen(PORT, () => {
+  startDevotionalScheduler();
   // eslint-disable-next-line no-console
   console.log(`Members API running on port ${PORT}`);
 });

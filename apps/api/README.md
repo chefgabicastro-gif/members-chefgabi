@@ -90,3 +90,46 @@ curl -X POST http://localhost:4000/api/v1/webhooks/gg-checkout \
     "product":{"id":"12345"}
   }'
 ```
+
+## Bot de devocional diario
+
+Rotas:
+
+- `POST /api/v1/devotional/subscribers`
+- `GET /api/v1/devotional/subscribers/:phone`
+- `DELETE /api/v1/devotional/subscribers/:phone`
+- `GET /api/v1/admin/devotional/status`
+- `POST /api/v1/admin/devotional/send-now`
+- `GET /api/v1/admin/devotional/evolution/instances`
+- `POST /api/v1/admin/devotional/evolution/instances`
+- `POST /api/v1/admin/devotional/evolution/instances/:instanceName/select`
+- `GET /api/v1/admin/devotional/evolution/instances/:instanceName/state`
+- `POST /api/v1/admin/devotional/evolution/instances/:instanceName/connect`
+- `POST /api/v1/admin/devotional/evolution/instances/:instanceName/restart`
+- `POST /api/v1/admin/devotional/evolution/instances/:instanceName/logout`
+
+Campos do subscriber:
+
+- `phone`: telefone com DDI, ex. `5511999999999`
+- `name`: opcional
+- `notes`: opcional
+- `timezone`: opcional, padrao `America/Sao_Paulo`
+- `schedule`: opcional, padrao `["07:00","19:00"]`
+
+Variaveis de ambiente:
+
+- `OPENAI_API_KEY`
+- `OPENAI_MODEL` (padrao `gpt-5`)
+- `DEVOTIONAL_ENABLED`
+- `DEVOTIONAL_TIMEZONE`
+- `DEVOTIONAL_SCHEDULE`
+- `DEVOTIONAL_TICK_SECONDS`
+- `DEVOTIONAL_MAX_OUTPUT_TOKENS`
+- `DEVOTIONAL_SYSTEM_PROMPT`
+- `EVOLUTION_API_BASE_URL`
+- `EVOLUTION_API_KEY`
+- `EVOLUTION_INSTANCE`
+
+Observacao:
+
+- O bot usa a instancia Evolution marcada como ativa no painel/admin. Se nenhuma estiver selecionada, ele cai no valor de `EVOLUTION_INSTANCE` do ambiente.

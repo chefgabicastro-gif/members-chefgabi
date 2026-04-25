@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#07110d" />
+    <title>Painel de Lancamento | Devocional Diario</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Sora:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/devotional-admin.css" />
+  </head>
+  <body>
+    <div class="admin-noise"></div>
+    <div class="admin-glow admin-glow-left"></div>
+    <div class="admin-glow admin-glow-right"></div>
+
+    <main class="admin-shell">
+      <section class="hero panel">
+        <div>
+          <span class="eyebrow">Painel de lancamento</span>
+          <h1>Controle o bot, troque a linha do WhatsApp e dispare o devocional sem depender de terminal.</h1>
+          <p>
+            Este painel foi pensado para operacao real: se um numero cair, voce cria outra instancia,
+            escaneia o QR, marca como ativa e segue com o envio do devocional diario.
+          </p>
+        </div>
+
+        <form id="authForm" class="auth-card">
+          <label for="adminKeyInput">Chave admin</label>
+          <input id="adminKeyInput" type="password" placeholder="Cole sua x-admin-key" required />
+          <button class="primary-btn" type="submit">Entrar no painel</button>
+          <p id="authMessage" class="status-copy">A chave fica salva apenas neste navegador.</p>
+        </form>
+      </section>
+
+      <section class="snapshot-grid">
+        <article class="panel stat-card">
+          <span class="card-label">Instancia ativa</span>
+          <strong id="activeInstanceValue">-</strong>
+          <p id="activeInstanceCopy">Conecte uma linha para comecar os envios.</p>
+        </article>
+        <article class="panel stat-card">
+          <span class="card-label">Agendamento</span>
+          <strong id="scheduleValue">-</strong>
+          <p id="timezoneValue">Fuso: -</p>
+        </article>
+        <article class="panel stat-card">
+          <span class="card-label">Assinantes</span>
+          <strong id="subscriberCountValue">0</strong>
+          <p id="dispatchCountValue">0 envios recentes</p>
+        </article>
+      </section>
+
+      <section class="admin-grid">
+        <article class="panel">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Instancias Evolution</span>
+              <h2>Linhas de WhatsApp para o lancamento</h2>
+            </div>
+            <button id="refreshInstancesBtn" class="ghost-btn" type="button">Atualizar</button>
+          </div>
+
+          <form id="createInstanceForm" class="stack-form">
+            <div class="field-row">
+              <label>
+                <span>Nome da instancia</span>
+                <input id="instanceNameInput" type="text" placeholder="devocional-lancamento-01" required />
+              </label>
+              <label>
+                <span>Numero dono</span>
+                <input id="instanceNumberInput" type="text" placeholder="5511999999999" />
+              </label>
+            </div>
+            <label>
+              <span>Token opcional</span>
+              <input id="instanceTokenInput" type="text" placeholder="Deixe vazio para gerar dinamico" />
+            </label>
+            <button class="primary-btn" type="submit">Criar nova instancia</button>
+          </form>
+
+          <div id="instancesList" class="instance-list"></div>
+        </article>
+
+        <article class="panel qr-panel">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">QR Code</span>
+              <h2>Escaneie e valide a linha</h2>
+            </div>
+          </div>
+
+          <div class="qr-stage">
+            <canvas id="qrCanvas" width="280" height="280"></canvas>
+            <div class="qr-copy">
+              <span class="card-label">Instancia selecionada</span>
+              <strong id="qrInstanceName">Nenhuma</strong>
+              <p id="qrStatusText">Clique em "Gerar QR" em uma instancia para carregar o pareamento.</p>
+              <code id="pairingCodeValue">-</code>
+            </div>
+          </div>
+
+          <div class="qr-actions">
+            <button id="refreshQrBtn" class="ghost-btn" type="button">Gerar QR novamente</button>
+            <button id="pollStateBtn" class="ghost-btn" type="button">Consultar status</button>
+          </div>
+        </article>
+      </section>
+
+      <section class="admin-grid">
+        <article class="panel">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Assinantes</span>
+              <h2>Base do devocional</h2>
+            </div>
+          </div>
+
+          <form id="subscriberForm" class="stack-form">
+            <div class="field-row">
+              <label>
+                <span>Telefone</span>
+                <input id="subscriberPhoneInput" type="text" placeholder="5511999999999" required />
+              </label>
+              <label>
+                <span>Nome</span>
+                <input id="subscriberNameInput" type="text" placeholder="Ex.: Lista principal" />
+              </label>
+            </div>
+            <label>
+              <span>Observacoes</span>
+              <input id="subscriberNotesInput" type="text" placeholder="Ex.: grupo da igreja, lideranca, teste" />
+            </label>
+            <button class="primary-btn" type="submit">Cadastrar assinante</button>
+          </form>
+
+          <div id="subscriberList" class="subscriber-list"></div>
+        </article>
+
+        <article class="panel">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Operacao diaria</span>
+              <h2>Teste e historico</h2>
+            </div>
+          </div>
+
+          <form id="manualSendForm" class="stack-form">
+            <div class="field-row">
+              <label>
+                <span>Slot</span>
+                <select id="sendSlotInput">
+                  <option value="07:00">07:00</option>
+                  <option value="19:00">19:00</option>
+                </select>
+              </label>
+              <label>
+                <span>Telefone opcional</span>
+                <input id="sendPhoneInput" type="text" placeholder="Vazio = enviar para todos ativos" />
+              </label>
+            </div>
+            <button class="primary-btn" type="submit">Disparar agora</button>
+          </form>
+
+          <div id="sendResultBox" class="result-box">
+            <span class="card-label">Resultado</span>
+            <pre id="sendResultText">Sem disparos manuais ainda.</pre>
+          </div>
+
+          <div class="section-head section-head-tight">
+            <div>
+              <span class="eyebrow">Envios recentes</span>
+            </div>
+          </div>
+          <div id="dispatchList" class="dispatch-list"></div>
+        </article>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+    <script src="/devotional-admin.js"></script>
+  </body>
+</html>

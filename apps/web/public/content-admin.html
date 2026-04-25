@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#07090f" />
+    <title>Painel de Conteudo | Da Crise ao Chamado</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Sora:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/content-admin.css" />
+  </head>
+  <body>
+    <div class="admin-noise"></div>
+    <div class="admin-glow glow-left"></div>
+    <div class="admin-glow glow-right"></div>
+
+    <main class="admin-shell">
+      <section class="panel hero">
+        <div>
+          <span class="eyebrow">Painel de conteudo</span>
+          <h1>Suba o acervo premium sem depender de codigo ou terminal.</h1>
+          <p>
+            Aqui voce cadastra videos, audios, PDFs, infograficos e estudos escritos. O painel guarda os
+            links e organiza o acervo para aparecer automaticamente no aplicativo premium.
+          </p>
+        </div>
+
+        <form id="authForm" class="auth-card">
+          <label for="adminKeyInput">Chave admin</label>
+          <input id="adminKeyInput" type="password" placeholder="Cole sua x-admin-key" required />
+          <button class="primary-btn" type="submit">Liberar painel</button>
+          <p id="authMessage" class="status-copy">A chave fica salva apenas neste navegador.</p>
+        </form>
+      </section>
+
+      <section class="snapshot-grid">
+        <article class="panel stat-card">
+          <span class="card-label">Publicados</span>
+          <strong id="publishedCount">0</strong>
+          <p>Materiais ja visiveis para quem comprou.</p>
+        </article>
+        <article class="panel stat-card">
+          <span class="card-label">Rascunhos</span>
+          <strong id="draftCount">0</strong>
+          <p>Conteudos em preparacao, ainda ocultos no app.</p>
+        </article>
+        <article class="panel stat-card">
+          <span class="card-label">Formato</span>
+          <strong>URLs externas</strong>
+          <p>Use Vimeo, YouTube, Cloudinary, Supabase, Drive ou outro storage.</p>
+        </article>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel panel-pad">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Cadastro</span>
+              <h2>Novo material ou edicao</h2>
+            </div>
+            <button id="resetFormButton" class="ghost-btn" type="button">Limpar formulario</button>
+          </div>
+
+          <form id="contentForm" class="stack-form">
+            <input id="contentIdInput" type="hidden" />
+
+            <div class="field-row">
+              <label>
+                <span>Tipo</span>
+                <select id="typeInput" required>
+                  <option value="video">Video</option>
+                  <option value="audio">Audio</option>
+                  <option value="pdf">PDF</option>
+                  <option value="infographic">Infografico</option>
+                  <option value="study">Estudo escrito</option>
+                </select>
+              </label>
+              <label>
+                <span>Status</span>
+                <select id="statusInput" required>
+                  <option value="published">Publicado</option>
+                  <option value="draft">Rascunho</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="field-row">
+              <label>
+                <span>Titulo</span>
+                <input id="titleInput" type="text" placeholder="Ex.: Audio para madrugada de ansiedade" required />
+              </label>
+              <label>
+                <span>Duracao</span>
+                <input id="durationInput" type="text" placeholder="Ex.: 12 min" />
+              </label>
+            </div>
+
+            <div class="field-row">
+              <label>
+                <span>Modulo</span>
+                <input id="moduleInput" type="text" placeholder="Ex.: Modulo 1 - O colapso" />
+              </label>
+              <label>
+                <span>Fase</span>
+                <input id="phaseInput" type="text" placeholder="Ex.: Colapso, Reconstrucao, Chamado" />
+              </label>
+            </div>
+
+            <label>
+              <span>Resumo</span>
+              <textarea id="summaryInput" rows="3" placeholder="Explique o que esse material entrega e por que ele importa."></textarea>
+            </label>
+
+            <div class="field-row">
+              <label>
+                <span>Thumbnail / capa</span>
+                <input id="coverUrlInput" type="url" placeholder="https://..." />
+              </label>
+              <label>
+                <span>Versiculo-chave</span>
+                <input id="verseInput" type="text" placeholder="Ex.: 1 Reis 19:4-8" />
+              </label>
+            </div>
+
+            <div class="field-row">
+              <label>
+                <span>URL principal</span>
+                <input id="mediaUrlInput" type="url" placeholder="Link do Vimeo, YouTube, MP3, PDF ou imagem" />
+              </label>
+              <label>
+                <span>URL secundaria / download</span>
+                <input id="downloadUrlInput" type="url" placeholder="Link alternativo, download ou apoio" />
+              </label>
+            </div>
+
+            <label>
+              <span>Tags</span>
+              <input id="tagsInput" type="text" placeholder="ansiedade, madrugada, identidade, restauracao" />
+            </label>
+
+            <div class="section-divider">
+              <span class="eyebrow">Base de estudo</span>
+            </div>
+
+            <label>
+              <span>Abertura narrativa</span>
+              <textarea id="introInput" rows="4" placeholder="Abra a experiencia com uma narrativa intensa e pastoral."></textarea>
+            </label>
+            <label>
+              <span>Base biblica</span>
+              <textarea id="studyBaseInput" rows="4" placeholder="Traga o texto, contexto e direcao de estudo."></textarea>
+            </label>
+            <label>
+              <span>Conceito central</span>
+              <textarea id="conceptInput" rows="4" placeholder="Qual e a verdade principal que este material quer firmar?"></textarea>
+            </label>
+            <label>
+              <span>Reflexao intensa</span>
+              <textarea id="reflectionInput" rows="5" placeholder="Leve a pessoa para dentro do proprio coracao com profundidade."></textarea>
+            </label>
+            <label>
+              <span>Aplicacao e resposta</span>
+              <textarea id="applicationInput" rows="4" placeholder="Mostre o que precisa mudar, parar, nascer ou ser praticado."></textarea>
+            </label>
+            <label>
+              <span>O que isso revela sobre voce</span>
+              <textarea id="selfRevealInput" rows="4" placeholder="Ajude a pessoa a se enxergar com verdade."></textarea>
+            </label>
+            <label>
+              <span>O que isso revela sobre Deus</span>
+              <textarea id="godRevealInput" rows="4" placeholder="Aponte para o carater, a presenca e a direcao de Deus."></textarea>
+            </label>
+            <label>
+              <span>Journaling guiado</span>
+              <textarea id="journalingInput" rows="4" placeholder="Perguntas para a pessoa escrever e processar o estudo."></textarea>
+            </label>
+            <label>
+              <span>Oracao guiada</span>
+              <textarea id="prayerInput" rows="4" placeholder="Escreva uma oracao pastoral e profunda."></textarea>
+            </label>
+            <label>
+              <span>Encerramento liturgico</span>
+              <textarea id="closingInput" rows="4" placeholder="Feche a experiencia com pausa, reverencia e envio."></textarea>
+            </label>
+
+            <div class="form-actions">
+              <button class="primary-btn" type="submit">Salvar material</button>
+              <button id="deleteButton" class="danger-btn" type="button" disabled>Excluir material</button>
+            </div>
+            <p id="formMessage" class="status-copy">Tudo salvo aqui pode aparecer automaticamente no app premium.</p>
+          </form>
+        </article>
+
+        <article class="panel panel-pad">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Acervo</span>
+              <h2>Biblioteca administravel</h2>
+            </div>
+            <button id="refreshButton" class="ghost-btn" type="button">Atualizar lista</button>
+          </div>
+
+          <label class="search-field">
+            <span>Buscar material</span>
+            <input id="searchInput" type="search" placeholder="Titulo, modulo, tag ou versiculo" />
+          </label>
+
+          <div id="contentList" class="content-list"></div>
+        </article>
+      </section>
+    </main>
+
+    <script src="/content-admin.js"></script>
+  </body>
+</html>

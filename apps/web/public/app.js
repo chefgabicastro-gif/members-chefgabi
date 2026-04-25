@@ -1,6 +1,6 @@
 ﻿const DEFAULT_API_BASE =
-  window.location.hostname === "localhost" ? "http://localhost:4000" : "https://members-chefgabi-api.onrender.com";
-const API_FALLBACKS = [DEFAULT_API_BASE, "https://api.chefgabriellacastro.site", "https://chefgabi-members-api.onrender.com"];
+  window.location.hostname === "localhost" ? "http://localhost:4000" : "https://da-crise-ao-chamado-api.onrender.com";
+const API_FALLBACKS = [DEFAULT_API_BASE, "https://da-crise-ao-chamado-api.onrender.com"];
 
 function resolveInitialApiBase() {
   const saved = localStorage.getItem("apiBase");
